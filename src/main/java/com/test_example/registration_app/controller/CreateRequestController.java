@@ -2,7 +2,7 @@ package com.test_example.registration_app.controller;
 
 import com.test_example.registration_app.model.Request;
 import com.test_example.registration_app.model.RequestCreationResponse;
-import com.test_example.registration_app.model.RequestDto;
+import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.service.CreateRequestService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

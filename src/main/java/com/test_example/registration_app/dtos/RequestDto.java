@@ -1,4 +1,4 @@
-package com.test_example.registration_app.model;
+package com.test_example.registration_app.dtos;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

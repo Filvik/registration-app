@@ -2,19 +2,18 @@ package com.test_example.registration_app.service;
 
 import com.test_example.registration_app.enums.EnumStatus;
 import com.test_example.registration_app.model.Request;
-import com.test_example.registration_app.model.RequestDto;
+import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.model.User;
 import com.test_example.registration_app.repository.RequestRepository;
 import com.test_example.registration_app.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class CreateRequestService {
 

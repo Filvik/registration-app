@@ -1,6 +1,6 @@
 package com.test_example.registration_app.controller;
 
-import com.test_example.registration_app.model.RequestDto;
+import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.repository.RequestRepository;
 import com.test_example.registration_app.service.CreateRequestService;
 import com.test_example.registration_app.service.RequestDtoConverterService;
