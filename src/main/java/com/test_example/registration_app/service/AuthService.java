@@ -6,6 +6,7 @@ import com.test_example.registration_app.dtos.RegistrationUserDto;
 import com.test_example.registration_app.dtos.UserDto;
 import com.test_example.registration_app.exceptions.ApplicationError;
 import com.test_example.registration_app.model.User;
+import com.test_example.registration_app.repository.UserRepository;
 import com.test_example.registration_app.utils.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ public class AuthService {
     private final UserService userService;
     private final JwtTokenUtils jwtTokenUtils;
     private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+
 
     public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) {
         try {
@@ -40,7 +43,8 @@ public class AuthService {
         if (!registrationUserDto.getPassword().equals(registrationUserDto.getConfirmPassword())) {
             return new ResponseEntity<>(new ApplicationError(HttpStatus.BAD_REQUEST.value(), "Пароли не совпадают"), HttpStatus.BAD_REQUEST);
         }
-        if (userService.findByUsername(registrationUserDto.getUsername()).isPresent()) {
+//        if (userService.findByUsername(registrationUserDto.getUsername()).isPresent()) {
+        if (userRepository.findByFullName(registrationUserDto.getUsername()).isPresent()) {
             return new ResponseEntity<>(new ApplicationError(HttpStatus.BAD_REQUEST.value(), "Пользователь с указанным именем уже существует"), HttpStatus.BAD_REQUEST);
         }
         User user = userService.createNewUser(registrationUserDto);
