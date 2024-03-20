@@ -5,9 +5,8 @@ import com.test_example.registration_app.exceptions.RegistrationUserDtoException
 import com.test_example.registration_app.model.Role;
 import com.test_example.registration_app.model.User;
 import com.test_example.registration_app.repository.UserRepository;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,14 +21,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-@Data
 @Slf4j
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RoleService roleService;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
+    public UserService(UserRepository userRepository, RoleService roleService, @Lazy PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     @Transactional
@@ -44,18 +46,20 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    @Transactional
     public User createNewUser(RegistrationUserDto registrationUserDto) {
         if (validateRegistrationUserDto(registrationUserDto)){
             User user = new User();
             user.setFullName(registrationUserDto.getUsername());
             user.setEmail(registrationUserDto.getEmail());
+            user.setPhoneNumber(registrationUserDto.getPhoneNumber());
             user.setPasswordHash(passwordEncoder.encode(registrationUserDto.getPassword()));
             List<String> roleNames = registrationUserDto.getRoles().stream()
                     .map(Role::getRoleName)
                     .collect(Collectors.toList());
             Set<Role> userRoles = roleService.getUserRolesForAddInBD(roleNames);
             user.setRoles(userRoles);
-            return userRepository.save(user);
+            return userRepository.saveAndFlush(user);
         }
         else {
             log.error("Validation failed for RegistrationUserDto");
