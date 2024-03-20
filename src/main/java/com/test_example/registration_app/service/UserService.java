@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
-    private RoleService roleService;
+    private final RoleService roleService;
     private PasswordEncoder passwordEncoder;
 
 
@@ -36,6 +36,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByFullName(username).orElseThrow(() -> new UsernameNotFoundException(
                 String.format("Пользователь '%s' не найден", username)));
+        user.setRoles(roleService.getUserRolesFromBD(user.getId()));
         return new org.springframework.security.core.userdetails.User(
                 user.getFullName(),
                 user.getPasswordHash(),
@@ -52,7 +53,7 @@ public class UserService implements UserDetailsService {
             List<String> roleNames = registrationUserDto.getRoles().stream()
                     .map(Role::getRoleName)
                     .collect(Collectors.toList());
-            Set<Role> userRoles = roleService.getUserRoles(roleNames);
+            Set<Role> userRoles = roleService.getUserRolesForAddInBD(roleNames);
             user.setRoles(userRoles);
             return userRepository.save(user);
         }
