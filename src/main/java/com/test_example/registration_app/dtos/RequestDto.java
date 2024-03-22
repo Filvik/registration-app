@@ -10,9 +10,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class RequestDto {
     private UUID uuid;
-    private Long userId;
     private String userName;
     private String phoneNumber;
+    private String email;
     private String status;
     private String text;
     private Timestamp createdAt;

@@ -16,6 +16,7 @@
     <div class="alert alert-success" role="alert">
         Добро пожаловать в панель управления.
     </div>
+    <a th:href="@{/api/create-request-form}" class="btn btn-primary mt-3">Создание новой формы</a>
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Выход" class="btn btn-danger">
     </form>

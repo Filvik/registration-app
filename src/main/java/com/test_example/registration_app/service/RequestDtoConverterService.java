@@ -20,8 +20,8 @@ public class RequestDtoConverterService {
     public Request fromRequestDtoToRequest(RequestDto dto) {
         validateRequestDto(dto);
 
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User with ID " + dto.getUserId() + " not found"));
+        User user = userRepository.findByFullName(dto.getUserName())
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + dto.getUserName() + " not found"));
 
         Request request = new Request();
         request.setUser(user);
@@ -42,9 +42,9 @@ public class RequestDtoConverterService {
 
         RequestDto dto = new RequestDto();
         dto.setUuid(request.getUuid());
-        dto.setUserId(request.getUser().getId());
         dto.setUserName(request.getUser().getFullName());
         dto.setPhoneNumber(request.getUser().getPhoneNumber());
+        dto.setEmail(request.getUser().getEmail());
         dto.setStatus(String.valueOf(request.getStatus()));
         dto.setText(request.getText());
         dto.setCreatedAt(request.getCreatedAt());
@@ -53,8 +53,7 @@ public class RequestDtoConverterService {
     }
 
     protected static void validateRequestDto(RequestDto dto) {
-        if (dto == null || dto.getUserId() == null || !StringUtils.hasText(dto.getUserName()) ||
-                !StringUtils.hasText(dto.getPhoneNumber()) || !StringUtils.hasText(dto.getStatus()) ||
+        if (dto == null || !StringUtils.hasText(dto.getUserName()) || !StringUtils.hasText(dto.getStatus()) ||
                 !StringUtils.hasText(dto.getText())) {
             log.error("RequestDto contains invalid or null fields");
             throw new IllegalArgumentException("RequestDto contains invalid or null fields");

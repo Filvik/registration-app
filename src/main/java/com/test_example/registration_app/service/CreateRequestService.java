@@ -24,18 +24,19 @@ public class CreateRequestService {
 
         RequestDtoConverterService.validateRequestDto(requestDto);
 
-        Optional<User> userOptional = userRepository.findById(requestDto.getUserId());
+        Optional<User> userOptional = userRepository.findByFullName(requestDto.getUserName());
         if (userOptional.isPresent()) {
 
             Request request = new Request();
             request.setUser(userOptional.get());
+            request.setId(userOptional.get().getId());
             request.setStatus(Enum.valueOf(EnumStatus.class, requestDto.getStatus().toUpperCase()));
             request.setText(requestDto.getText());
 
             return requestRepository.saveAndFlush(request);
         } else {
-            log.error("User with ID " + requestDto.getUserId() + " not found");
-            throw new IllegalArgumentException("User with ID " + requestDto.getUserId() + " not found");
+            log.error("User with UserName " + requestDto.getUserName() + " not found");
+            throw new IllegalArgumentException("User with UserName " + requestDto.getUserName() + " not found");
         }
     }
 }

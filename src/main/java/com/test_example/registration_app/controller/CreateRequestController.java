@@ -7,18 +7,24 @@ import com.test_example.registration_app.service.CreateRequestService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
-@RestController
+@Controller
 @RequestMapping("/api")
 @AllArgsConstructor
 @Slf4j
 public class CreateRequestController {
 
     private final CreateRequestService createRequestService;
+
+    @GetMapping("/create-request-form")
+    public String showCreateRequestForm() {
+        return "create_request_form";
+    }
 
     @PostMapping("/create-request")
     public ResponseEntity<?> createRequest(@RequestBody RequestDto requestDto) {

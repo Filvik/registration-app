@@ -36,6 +36,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                         .requestMatchers(HttpMethod.POST, "/registration").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/create-request-form").hasAnyAuthority("User","Operator")
+                        .requestMatchers(HttpMethod.POST, "/api/create-request").hasAnyAuthority("User","Operator")
+                        .requestMatchers(HttpMethod.GET, "/api/created-request/**").hasAnyAuthority("User","Operator")
                         .requestMatchers(HttpMethod.POST, "/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/**").hasRole("Administrator")
@@ -58,8 +61,7 @@ public class SecurityConfig {
 //                .csrf(AbstractHttpConfigurer::disable)
 //                .cors(AbstractHttpConfigurer::disable)
 //                .authorizeHttpRequests(authorize -> authorize
-//                        .anyRequest().permitAll())
-//                        .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+//                        .anyRequest().permitAll());
 //        return http.build();
 //    }
 

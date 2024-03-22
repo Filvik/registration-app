@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Create Request Form</title>
@@ -11,20 +11,12 @@
     <h2>Create Request</h2>
     <form id="createRequestForm" class="row g-3">
         <div class="col-md-6">
-            <label for="userId" class="form-label">User ID:</label>
-            <input type="number" class="form-control" id="userId" name="userId">
-        </div>
-        <div class="col-md-6">
             <label for="userName" class="form-label">User Name:</label>
-            <input type="text" class="form-control" id="userName" name="userName">
+            <input type="text" class="form-control" id="userName" name="userName" required>
         </div>
         <div class="col-md-6">
-            <label for="phoneNumber" class="form-label">Phone Number:</label>
-            <input type="text" class="form-control" id="phoneNumber" name="phoneNumber">
-        </div>
-        <div class="col-md-4">
             <label for="status" class="form-label">Status:</label>
-            <select id="status" class="form-select" name="status">
+            <select id="status" class="form-select" name="status" required>
                 <option value="DRAFT">DRAFT</option>
                 <option value="SENT">SUBMITTED</option>
                 <option value="ACCEPTED">APPROVED</option>
@@ -33,20 +25,19 @@
         </div>
         <div class="col-12">
             <label for="text" class="form-label">Description:</label>
-            <textarea class="form-control" id="text" name="text"></textarea>
+            <textarea class="form-control" id="text" name="text" required></textarea>
         </div>
         <div class="col-12">
             <button type="button" class="btn btn-primary" onclick="submitForm()">Submit</button>
         </div>
     </form>
+    <button id="logoutButton" class="btn btn-danger mt-3">Выход</button>
 </div>
 
 <script>
     function submitForm() {
         var formData = {
-            userId: $('#userId').val(),
             userName: $('#userName').val(),
-            phoneNumber: $('#phoneNumber').val(),
             status: $('#status').val(),
             text: $('#text').val()
         };
@@ -60,10 +51,20 @@
                 window.location.href = response.url;
             },
             error: function(response) {
-                alert('Failed to create request. Description: ' + response.responseJSON.description);
+                var errorDetail = response.responseJSON && response.responseJSON.detail;
+                var errorMessage = errorDetail || 'No detailed error message provided.';
+                alert('Failed to create request. Description: ' + errorMessage);
             }
         });
     }
+
+    $('#logoutButton').click(function() {
+        $.post('/logout', function() {
+            window.location.href = '/login';
+        }).fail(function() {
+            alert('Ошибка выхода');
+        });
+    });
 </script>
 </body>
 </html>
