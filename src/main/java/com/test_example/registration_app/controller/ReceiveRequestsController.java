@@ -2,6 +2,7 @@ package com.test_example.registration_app.controller;
 
 import com.test_example.registration_app.dtos.CustomPageDTO;
 import com.test_example.registration_app.model.Request;
+import com.test_example.registration_app.repository.RequestRepository;
 import com.test_example.registration_app.service.RequestManipulationService;
 import com.test_example.registration_app.service.RequestPagesConverterService;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,12 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/requests")
 @RequiredArgsConstructor
-public class RequestManipulationController {
+public class ReceiveRequestsController {
 
     private final RequestManipulationService requestManipulationService;
     private final RequestPagesConverterService requestPagesConverterService;
 
+    // Получение списка всех заявок пользователя.
     @GetMapping
     public String getRequests(Model model, Authentication authentication,
                               @RequestParam(value = "page", defaultValue = "0") int defaultpage,
@@ -42,22 +44,4 @@ public class RequestManipulationController {
         model.addAttribute("sort", sort);
         return "requests";
     }
-
-
-
-//    // Редактирование заявки в статусе "черновик" пользователем
-//    @PutMapping("/{id}")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<Request> editDraftRequest(@PathVariable Long id,
-//                                                    @RequestBody Request requestUpdate,
-//                                                    Authentication authentication) {
-//        return ResponseEntity.ok(requestManipulationService.updateDraftRequest(id, requestUpdate, authentication.getName()));
-//    }
-//
-//    // Отправка заявки на рассмотрение
-//    @PostMapping("/{id}/send")
-//    @PreAuthorize("hasRole('USER')")
-//    public ResponseEntity<Request> sendRequest(@PathVariable Long id, Authentication authentication) {
-//        return ResponseEntity.ok(requestManipulationService.sendRequest(id, authentication.getName()));
-//    }
 }

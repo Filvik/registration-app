@@ -23,7 +23,6 @@ public class CreatedRequestViewController {
     private final CreateRequestService createRequestService;
     private final RequestRepository requestRepository;
 
-
     @GetMapping("/created-request/{id}")
     public String getRequestById(@PathVariable Long id, Model model) {
         Request requestFromDb = requestRepository.findById(id)

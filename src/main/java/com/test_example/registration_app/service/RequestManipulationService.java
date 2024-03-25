@@ -1,6 +1,5 @@
 package com.test_example.registration_app.service;
 
-import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.model.Request;
 import com.test_example.registration_app.repository.RequestRepository;
 import com.test_example.registration_app.repository.UserRepository;
@@ -25,11 +24,10 @@ public class RequestManipulationService {
     }
 
 
-
-//    public Request updateDraftRequest(Long id, Request requestUpdate, String name) {
+//    public String updateDraftRequest(Long id, Request requestUpdate, String name) {
 //
 //    }
-//
+
 //    public Request sendRequest(Long id, String name) {
 //
 //    }
