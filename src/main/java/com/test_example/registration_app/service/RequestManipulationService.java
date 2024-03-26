@@ -5,7 +5,9 @@ import com.test_example.registration_app.repository.RequestRepository;
 import com.test_example.registration_app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,5 +23,13 @@ public class RequestManipulationService {
         return userRepository.findByFullName(name)
                 .map(user -> requestRepository.findAllByUserId(user.getId(), pageable))
                 .orElse(Page.empty());
+    }
+
+    public Pageable getPageable(int defaultSize, Sort.Direction sortDirection,  String sort, int defaultPage) {
+        String[] sortParams = sort.split(",");
+        if (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1])) {
+            sortDirection = Sort.Direction.DESC;
+        }
+        return PageRequest.of(defaultPage, defaultSize, Sort.by(sortDirection, sortParams[0]));
     }
 }

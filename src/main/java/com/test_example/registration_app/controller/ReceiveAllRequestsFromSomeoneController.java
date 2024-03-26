@@ -6,7 +6,6 @@ import com.test_example.registration_app.service.RequestManipulationService;
 import com.test_example.registration_app.service.RequestPagesConverterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
@@ -24,15 +23,10 @@ public class ReceiveAllRequestsFromSomeoneController {
 
     @GetMapping
     public String getRequests(Model model, Authentication authentication,
-                              @RequestParam(value = "page", defaultValue = "0") int defaultpage,
+                              @RequestParam(value = "page", defaultValue = "0") int defaultPage,
                               @RequestParam(value = "sort", defaultValue = "createdAt,asc") String sort) {
-        int defaultSize = 5;
-        Sort.Direction sortDirection = Sort.Direction.ASC;
-        String[] sortParams = sort.split(",");
-        if (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1])) {
-            sortDirection = Sort.Direction.DESC;
-        }
-        Pageable pageable = PageRequest.of(defaultpage, defaultSize, Sort.by(sortDirection, sortParams[0]));
+
+        Pageable pageable = requestManipulationService.getPageable(5,Sort.Direction.ASC, sort, defaultPage);
         Page<Request> requestPage = requestManipulationService.findRequestsByUserName(authentication.getName(), pageable);
         CustomPageDTO customPageDTO = requestPagesConverterService.toCustomPageDTO(requestPage);
 
