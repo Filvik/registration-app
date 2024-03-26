@@ -2,7 +2,6 @@ package com.test_example.registration_app.controller;
 
 import com.test_example.registration_app.dtos.CustomPageDTO;
 import com.test_example.registration_app.model.Request;
-import com.test_example.registration_app.repository.RequestRepository;
 import com.test_example.registration_app.service.RequestManipulationService;
 import com.test_example.registration_app.service.RequestPagesConverterService;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/requests")
 @RequiredArgsConstructor
-public class ReceiveRequestsController {
+public class ReceiveAllRequestsFromSomeoneController {
 
     private final RequestManipulationService requestManipulationService;
     private final RequestPagesConverterService requestPagesConverterService;
 
-    // Получение списка всех заявок пользователя.
     @GetMapping
     public String getRequests(Model model, Authentication authentication,
                               @RequestParam(value = "page", defaultValue = "0") int defaultpage,

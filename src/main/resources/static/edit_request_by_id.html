@@ -10,6 +10,7 @@
 <div class="container mt-5">
     <h2>Edit Request</h2>
     <form th:action="@{/update/edit}" method="post" class="mt-4">
+        <input type="hidden" name="_method" value="put" />
         <input type="hidden" name="idRequest" th:value="${requestId}" />
         <div class="mb-3">
             <label for="uuid" class="form-label">Uuid</label>

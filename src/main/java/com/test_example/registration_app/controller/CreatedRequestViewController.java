@@ -1,9 +1,8 @@
 package com.test_example.registration_app.controller;
 
 import com.test_example.registration_app.dtos.RequestDto;
-import com.test_example.registration_app.repository.RequestRepository;
-import com.test_example.registration_app.service.CreateRequestService;
 import com.test_example.registration_app.service.RequestDtoConverterService;
+import com.test_example.registration_app.service.UpdateRequestService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -20,14 +19,13 @@ import com.test_example.registration_app.model.Request;
 @RequestMapping("/api")
 public class CreatedRequestViewController {
 
-    private final CreateRequestService createRequestService;
-    private final RequestRepository requestRepository;
+    private final RequestDtoConverterService requestDtoConverterService;
+    private final UpdateRequestService updateRequestService;
 
     @GetMapping("/created-request/{id}")
     public String getRequestById(@PathVariable Long id, Model model) {
-        Request requestFromDb = requestRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid request Id:" + id));
-        RequestDto request = RequestDtoConverterService.fromRequestToRequestDto(requestFromDb);
+        Request requestFromDb = updateRequestService.getRequestById(id);
+        RequestDto request = requestDtoConverterService.fromRequestToRequestDto(requestFromDb);
         model.addAttribute("request", request);
         return "request_details";
     }

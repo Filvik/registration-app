@@ -37,7 +37,7 @@ public class RequestDtoConverterService {
         return request;
     }
 
-    public static RequestDto fromRequestToRequestDto(Request request) {
+    public RequestDto fromRequestToRequestDto(Request request) {
         validateRequest(request);
 
         RequestDto dto = new RequestDto();

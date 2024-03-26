@@ -3,6 +3,8 @@ package com.test_example.registration_app.service;
 import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.enums.EnumStatus;
 import com.test_example.registration_app.model.Request;
+import com.test_example.registration_app.repository.RequestRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +12,12 @@ import java.sql.Timestamp;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UpdateRequestService {
 
-    public static Request updateRequestFromDto(Request requestToUpdate, RequestDto requestDto) {
+    private final RequestRepository requestRepository;
+
+    public void updateRequestFromDto(Request requestToUpdate, RequestDto requestDto) {
 
         if (requestToUpdate == null || requestDto == null) {
             log.error("Attempted to update a request with a null entity or DTO.");
@@ -30,12 +35,17 @@ public class UpdateRequestService {
             }
             requestToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
-        return requestToUpdate;
+        requestRepository.saveAndFlush(requestToUpdate);
     }
 
     public static boolean isUpdated(Request requestToUpdate, RequestDto requestDto) {
         EnumStatus status = EnumStatus.valueOf(requestDto.getStatus().toUpperCase());
         return requestDto.getText().equals(requestToUpdate.getText()) &&
                 status == requestToUpdate.getStatus();
+    }
+
+    public Request getRequestById(Long idRequest) {
+        return requestRepository.findById(idRequest)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid request Id: " + idRequest));
     }
 }

@@ -3,7 +3,6 @@ package com.test_example.registration_app.controller;
 import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.enums.EnumStatus;
 import com.test_example.registration_app.model.Request;
-import com.test_example.registration_app.repository.RequestRepository;
 import com.test_example.registration_app.service.RequestDtoConverterService;
 import com.test_example.registration_app.service.UpdateRequestService;
 import lombok.RequiredArgsConstructor;
@@ -18,31 +17,29 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UpdateRequestController {
 
-    private final RequestRepository requestRepository;
+    private final UpdateRequestService updateRequestService;
+    private final RequestDtoConverterService requestDtoConverterService;
 
     @GetMapping("/edit")
     public String showEditForm(@RequestParam Long idRequest, Model model) {
-        Request request = requestRepository.findById(idRequest)
-                .orElseThrow(() -> new IllegalArgumentException("(GetMapping)Invalid request Id: " + idRequest));
+        Request request = updateRequestService.getRequestById(idRequest);
 
         if (!request.getStatus().equals(EnumStatus.DRAFT)){
             return "redirect:/api/created-request/" + request.getId();
         }
 
-        RequestDto requestDto = RequestDtoConverterService.fromRequestToRequestDto(request);
+        RequestDto requestDto = requestDtoConverterService.fromRequestToRequestDto(request);
         model.addAttribute("request", requestDto);
         model.addAttribute("requestId", idRequest);
         return "edit_request_by_id";
     }
 
-    @PostMapping("/edit")
+    @PutMapping("/edit")
     public String updateRequest(@RequestParam Long idRequest, RequestDto requestDto) {
-        Request requestToUpdate = requestRepository.findById(idRequest)
-                .orElseThrow(() -> new IllegalArgumentException("(PostMapping)Invalid request Id: " + idRequest));
+        Request requestToUpdate = updateRequestService.getRequestById(idRequest);
 
         if (!UpdateRequestService.isUpdated(requestToUpdate, requestDto)) {
-            Request updatedRequest = UpdateRequestService.updateRequestFromDto(requestToUpdate, requestDto);
-            requestRepository.saveAndFlush(updatedRequest);
+            updateRequestService.updateRequestFromDto(requestToUpdate, requestDto);
             log.info("Request with ID: {} has been updated", idRequest);
         } else {
             log.info("No changes detected for request with ID: {}. Skipping database update.", idRequest);

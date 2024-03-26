@@ -22,13 +22,4 @@ public class RequestManipulationService {
                 .map(user -> requestRepository.findAllByUserId(user.getId(), pageable))
                 .orElse(Page.empty());
     }
-
-
-//    public String updateDraftRequest(Long id, Request requestUpdate, String name) {
-//
-//    }
-
-//    public Request sendRequest(Long id, String name) {
-//
-//    }
 }
