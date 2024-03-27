@@ -25,6 +25,11 @@ public class RequestManipulationService {
                 .orElse(Page.empty());
     }
 
+    @Transactional(readOnly = true)
+    public Page<Request> findAllRequests(Pageable pageable) {
+        return requestRepository.findAll(pageable);
+    }
+
     public Pageable getPageable(int defaultSize, Sort.Direction sortDirection,  String sort, int defaultPage) {
         String[] sortParams = sort.split(",");
         if (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1])) {
