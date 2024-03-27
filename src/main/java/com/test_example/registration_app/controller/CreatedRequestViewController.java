@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.test_example.registration_app.model.Request;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 @Slf4j
 @AllArgsConstructor
@@ -27,14 +26,19 @@ public class CreatedRequestViewController {
     @GetMapping("/created-request/{id}")
     public String getRequestById(@PathVariable Long id, Model model, Authentication authentication,
                                  RedirectAttributes redirectAttributes) {
-        Request requestFromDb = updateRequestService.getRequestById(id);
-
-        if (requestFromDb.getUser().getFullName().equals(authentication.getName())) {
-            RequestDto request = requestDtoConverterService.fromRequestToRequestDto(requestFromDb);
-            model.addAttribute("request", request);
-            return "request_details";
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "Not available for viewing");
+        try {
+            Request requestFromDb = updateRequestService.getRequestById(id);
+            if (updateRequestService.checkName(requestFromDb.getUser().getFullName(), authentication.getName())) {
+                RequestDto request = requestDtoConverterService.fromRequestToRequestDto(requestFromDb);
+                model.addAttribute("request", request);
+                return "request_details";
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Not available for viewing");
+                return "redirect:/error";
+            }
+        } catch (Exception e) {
+            log.warn("Error: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
             return "redirect:/error";
         }
     }

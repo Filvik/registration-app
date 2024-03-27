@@ -6,12 +6,14 @@ import com.test_example.registration_app.service.RequestDtoConverterService;
 import com.test_example.registration_app.service.SendRequestForReviewService;
 import com.test_example.registration_app.service.UpdateRequestService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@Slf4j
 @Controller
 @RequestMapping("/send")
 @RequiredArgsConstructor
@@ -36,6 +38,7 @@ public class SendRequestForReviewController {
                 return "redirect:/error";
             }
         } catch (Exception e) {
+            log.warn("Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
             return "redirect:/error";
         }
@@ -48,6 +51,7 @@ public class SendRequestForReviewController {
             Request request = sendRequestForReviewService.sendForReview(idRequest, authentication.getName());
             return "redirect:/api/created-request/" + request.getId();
         } catch (Exception e) {
+            log.warn("Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
             return "redirect:/error";
         }

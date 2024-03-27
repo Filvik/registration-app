@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -21,29 +22,41 @@ public class UpdateRequestController {
     private final RequestDtoConverterService requestDtoConverterService;
 
     @GetMapping("/edit")
-    public String showEditForm(@RequestParam Long idRequest, Model model) {
-        Request request = updateRequestService.getRequestById(idRequest);
+    public String showEditForm(@RequestParam Long idRequest, Model model, RedirectAttributes redirectAttributes) {
 
-        if (!request.getStatus().equals(EnumStatus.DRAFT)){
-            return "redirect:/api/created-request/" + request.getId();
+        try {
+            Request request = updateRequestService.getRequestById(idRequest);
+            if (!request.getStatus().equals(EnumStatus.DRAFT)){
+                return "redirect:/api/created-request/" + request.getId();
+            }
+            RequestDto requestDto = requestDtoConverterService.fromRequestToRequestDto(request);
+            model.addAttribute("request", requestDto);
+            model.addAttribute("requestId", idRequest);
+            return "edit_request_by_id";
         }
-
-        RequestDto requestDto = requestDtoConverterService.fromRequestToRequestDto(request);
-        model.addAttribute("request", requestDto);
-        model.addAttribute("requestId", idRequest);
-        return "edit_request_by_id";
+        catch (Exception e) {
+            log.warn("Error: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
+            return "redirect:/error";
+        }
     }
 
     @PutMapping("/edit")
-    public String updateRequest(@RequestParam Long idRequest, RequestDto requestDto) {
-        Request requestToUpdate = updateRequestService.getRequestById(idRequest);
-
-        if (!UpdateRequestService.isUpdated(requestToUpdate, requestDto)) {
-            updateRequestService.updateRequestFromDto(requestToUpdate, requestDto);
-            log.info("Request with ID: {} has been updated", idRequest);
-        } else {
-            log.info("No changes detected for request with ID: {}. Skipping database update.", idRequest);
+    public String updateRequest(@RequestParam Long idRequest, RequestDto requestDto, RedirectAttributes redirectAttributes) {
+        try {
+            Request requestToUpdate = updateRequestService.getRequestById(idRequest);
+            if (!UpdateRequestService.isUpdated(requestToUpdate, requestDto)) {
+                updateRequestService.updateRequestFromDto(requestToUpdate, requestDto);
+                log.info("Request with ID: {} has been updated", idRequest);
+            } else {
+                log.info("No changes detected for request with ID: {}. Skipping database update.", idRequest);
+            }
+            return "redirect:/api/created-request/" + requestToUpdate.getId();
         }
-        return "redirect:/api/created-request/" + requestToUpdate.getId();
+        catch (Exception e) {
+            log.warn("Error: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
+            return "redirect:/error";
+        }
     }
 }

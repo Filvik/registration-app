@@ -4,6 +4,7 @@ import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.enums.EnumStatus;
 import com.test_example.registration_app.model.Request;
 import com.test_example.registration_app.repository.RequestRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class UpdateRequestService {
 
     private final RequestRepository requestRepository;
 
+    @Transactional
     public void updateRequestFromDto(Request requestToUpdate, RequestDto requestDto) {
 
         if (requestToUpdate == null || requestDto == null) {

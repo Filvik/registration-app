@@ -6,6 +6,7 @@ import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.model.User;
 import com.test_example.registration_app.repository.RequestRepository;
 import com.test_example.registration_app.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class CreateRequestService {
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
 
+    @Transactional
     public Request createRequest(RequestDto requestDto) {
 
         RequestDtoConverterService.validateRequestDto(requestDto);
