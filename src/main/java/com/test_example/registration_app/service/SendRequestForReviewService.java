@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -15,16 +17,31 @@ public class SendRequestForReviewService {
     private final UpdateRequestService updateRequestService;
     private final RequestRepository requestRepository;
 
-    public Request send(Long idRequest) {
+    public Request sendForReview(Long idRequest, String name) {
         Request request = updateRequestService.getRequestById(idRequest);
-        if (request.getStatus().equals(EnumStatus.DRAFT)) {
-            request.setStatus(EnumStatus.SENT);
-            requestRepository.saveAndFlush(request);
+        if (updateRequestService.checkName(request.getUser().getFullName(), name)) {
+            if (request.getStatus().equals(EnumStatus.DRAFT)) {
+                request.setStatus(EnumStatus.SENT);
+                requestRepository.saveAndFlush(request);
+            }
+            else {
+                log.info("Status has not changed for request ID: {}", idRequest);
+                throw new IllegalStateException("Request status is not in DRAFT");
+            }
         }
-        else {
+       else {
             log.info("Status has not changed for request ID: {}", idRequest);
-            throw new IllegalStateException("Request status is not in DRAFT");
+            throw new IllegalStateException("Not available for update. You are not owner of request");
         }
         return request;
+    }
+
+    public Optional<Request> sendTest(Long idRequest, String username) {
+        return requestRepository.findById(idRequest).filter(request -> request.getUser().getFullName().equals(username))
+                .filter(request -> request.getStatus().equals(EnumStatus.DRAFT))
+                .map(request -> {
+                    request.setStatus(EnumStatus.SENT);
+                    return requestRepository.save(request);
+                });
     }
 }

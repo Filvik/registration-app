@@ -48,4 +48,8 @@ public class UpdateRequestService {
         return requestRepository.findById(idRequest)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid request Id: " + idRequest));
     }
+
+    public boolean checkName(String nameFromRequest, String nameFromAuth){
+        return nameFromRequest.equals(nameFromAuth);
+    }
 }
