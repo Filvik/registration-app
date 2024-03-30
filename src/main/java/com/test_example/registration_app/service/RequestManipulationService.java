@@ -11,6 +11,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RequestManipulationService {
@@ -26,15 +29,43 @@ public class RequestManipulationService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Request> findAllRequests(Pageable pageable) {
-        return requestRepository.findAll(pageable);
+    public Page<Request> findRequestsByFilter(String filterName, Pageable pageable) {
+        if (filterName != null && !filterName.isEmpty()) {
+            return requestRepository.findByUserFullNameContainingIgnoreCase(filterName, pageable);
+        } else {
+            return requestRepository.findAll(pageable);
+        }
     }
 
-    public Pageable getPageable(int defaultSize, Sort.Direction sortDirection,  String sort, int defaultPage) {
-        String[] sortParams = sort.split(",");
+    public Pageable getPageable(int defaultSize, Sort.Direction sortDirection, String sortTime, int defaultPage) {
+        String[] sortParams = sortTime.split(",");
         if (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1])) {
             sortDirection = Sort.Direction.DESC;
         }
         return PageRequest.of(defaultPage, defaultSize, Sort.by(sortDirection, sortParams[0]));
     }
+
+
+    public Pageable getPageable(int defaultSize, String sortTime, String sortName, int defaultPage) {
+        List<Sort.Order> orders = new ArrayList<>();
+        if (sortTime != null && !sortTime.isEmpty()) {
+            String[] sortTimeParams = sortTime.split(",");
+            Sort.Direction sortTimeDirection = Sort.Direction.fromString(sortTimeParams[1]);
+            orders.add(new Sort.Order(sortTimeDirection, sortTimeParams[0]));
+        }
+        if (sortName != null && !sortName.isEmpty()) {
+            String[] sortNameParams = sortName.split(",");
+            Sort.Direction sortNameDirection = Sort.Direction.fromString(sortNameParams[1]);
+            orders.add(new Sort.Order(sortNameDirection, sortNameParams[0]));
+        }
+        Pageable pageable;
+        if (!orders.isEmpty()) {
+            Sort sort = Sort.by(orders);
+            pageable = PageRequest.of(defaultPage, defaultSize, sort);
+        } else {
+            pageable = PageRequest.of(defaultPage, defaultSize);
+        }
+        return pageable;
+    }
+
 }

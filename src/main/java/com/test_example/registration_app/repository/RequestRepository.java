@@ -6,9 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
     Page<Request> findAllByUserId(Long id, Pageable pageable);
+    Page<Request> findByUserFullNameContainingIgnoreCase(String filterName, Pageable pageable);
 }
