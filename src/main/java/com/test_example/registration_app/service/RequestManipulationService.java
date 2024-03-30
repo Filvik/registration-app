@@ -67,5 +67,4 @@ public class RequestManipulationService {
         }
         return pageable;
     }
-
 }

@@ -31,7 +31,7 @@ public class UpdateRequestController {
             }
             RequestDto requestDto = requestDtoConverterService.fromRequestToRequestDto(request);
             model.addAttribute("request", requestDto);
-            model.addAttribute("requestId", idRequest);
+            model.addAttribute("idRequest", idRequest);
             return "edit_request_by_id";
         }
         catch (Exception e) {

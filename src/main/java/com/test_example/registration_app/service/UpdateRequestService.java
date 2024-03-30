@@ -27,15 +27,15 @@ public class UpdateRequestService {
         }
 
         EnumStatus status = EnumStatus.valueOf(requestDto.getStatus().toUpperCase());
-            log.info("Updating request with ID: {}", requestToUpdate.getId());
-            try {
-                requestToUpdate.setText(requestDto.getText());
-                requestToUpdate.setStatus(status);
-            } catch (IllegalArgumentException e) {
-                log.error("Invalid status value '{}' provided for request ID: {}", requestDto.getStatus(), requestToUpdate.getId());
-                throw new IllegalArgumentException("Invalid status value: " + requestDto.getStatus());
-            }
-            requestToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        log.info("Updating request with ID: {}", requestToUpdate.getId());
+        try {
+            requestToUpdate.setText(requestDto.getText());
+            requestToUpdate.setStatus(status);
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid status value '{}' provided for request ID: {}", requestDto.getStatus(), requestToUpdate.getId());
+            throw new IllegalArgumentException("Invalid status value: " + requestDto.getStatus());
+        }
+        requestToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
         requestRepository.saveAndFlush(requestToUpdate);
     }
@@ -51,7 +51,22 @@ public class UpdateRequestService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid request Id: " + idRequest));
     }
 
-    public boolean checkName(String nameFromRequest, String nameFromAuth){
+    public boolean checkName(String nameFromRequest, String nameFromAuth) {
         return nameFromRequest.equals(nameFromAuth);
+    }
+
+    public Request sendAccept(Request request, String action) {
+        if (request.getStatus().equals(EnumStatus.SENT)) {
+            if (action.equals("accept")) {
+                request.setStatus(EnumStatus.ACCEPTED);
+            } else if (action.equals("reject")) {
+                request.setStatus(EnumStatus.REJECTED);
+            }
+            requestRepository.saveAndFlush(request);
+        } else {
+            log.error("Invalid status value '{}'", request.getStatus());
+            throw new IllegalArgumentException("Invalid status value: " + request.getStatus());
+        }
+        return request;
     }
 }
