@@ -1,6 +1,6 @@
 package com.test_example.registration_app.controller;
 
-import com.test_example.registration_app.dtos.CustomPageDTO;
+import com.test_example.registration_app.dtos.RequestPageDTO;
 import com.test_example.registration_app.model.Request;
 import com.test_example.registration_app.service.RequestManipulationService;
 import com.test_example.registration_app.service.RequestPagesConverterService;
@@ -31,11 +31,11 @@ public class ReceiveAllRequestsFromSomeoneController {
         try {
             Pageable pageable = requestManipulationService.getPageable(5, Sort.Direction.ASC, sort, defaultPage);
             Page<Request> requestPage = requestManipulationService.findRequestsByUserName(authentication.getName(), pageable);
-            CustomPageDTO customPageDTO = requestPagesConverterService.toCustomPageDTO(requestPage);
+            RequestPageDTO requestPageDTO = requestPagesConverterService.toRequestPageDTO(requestPage);
 
-            model.addAttribute("requests", customPageDTO.getContent());
-            model.addAttribute("currentPage", customPageDTO.getCurrentPage());
-            model.addAttribute("totalPages", customPageDTO.getTotalPages());
+            model.addAttribute("requests", requestPageDTO.getContent());
+            model.addAttribute("currentPage", requestPageDTO.getCurrentPage());
+            model.addAttribute("totalPages", requestPageDTO.getTotalPages());
             model.addAttribute("sort", sort);
             return "requests_for_user";
         } catch (Exception e) {

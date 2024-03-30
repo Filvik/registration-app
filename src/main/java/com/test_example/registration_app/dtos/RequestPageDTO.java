@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CustomPageDTO {
+public class RequestPageDTO {
     private List<RequestDto> content;
     private int currentPage;
     private int totalPages;

@@ -3,7 +3,7 @@ package com.test_example.registration_app.service;
 import com.test_example.registration_app.dtos.JwtRequest;
 import com.test_example.registration_app.dtos.JwtResponse;
 import com.test_example.registration_app.dtos.RegistrationUserDto;
-import com.test_example.registration_app.dtos.UserDto;
+import com.test_example.registration_app.dtos.AddNewUserDto;
 import com.test_example.registration_app.dtos.ApplicationErrorDto;
 import com.test_example.registration_app.model.User;
 import com.test_example.registration_app.repository.UserRepository;
@@ -47,6 +47,6 @@ public class AuthService {
             return new ResponseEntity<>(new ApplicationErrorDto(HttpStatus.BAD_REQUEST.value(), "Пользователь с указанным именем уже существует"), HttpStatus.BAD_REQUEST);
         }
         User user = userService.createNewUser(registrationUserDto);
-        return ResponseEntity.ok(new UserDto("Успешно добавлен новый пользователь", user.getFullName()));
+        return ResponseEntity.ok(new AddNewUserDto("Успешно добавлен новый пользователь", user.getFullName()));
     }
 }

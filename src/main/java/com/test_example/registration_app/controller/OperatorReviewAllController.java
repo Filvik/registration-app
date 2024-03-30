@@ -1,6 +1,6 @@
 package com.test_example.registration_app.controller;
 
-import com.test_example.registration_app.dtos.CustomPageDTO;
+import com.test_example.registration_app.dtos.RequestPageDTO;
 import com.test_example.registration_app.model.Request;
 import com.test_example.registration_app.service.RequestManipulationService;
 import com.test_example.registration_app.service.RequestPagesConverterService;
@@ -36,11 +36,11 @@ public class OperatorReviewAllController {
         try {
             Pageable pageable = requestManipulationService.getPageable(5, sortTime, sortName, defaultPage);
             Page<Request> requestPage = requestManipulationService.findRequestsByFilter(filterName, pageable);
-            CustomPageDTO customPageDTO = requestPagesConverterService.toCustomPageDTO(requestPage);
+            RequestPageDTO requestPageDTO = requestPagesConverterService.toRequestPageDTO(requestPage);
 
-            model.addAttribute("requests", customPageDTO.getContent());
-            model.addAttribute("currentPage", customPageDTO.getCurrentPage());
-            model.addAttribute("totalPages", customPageDTO.getTotalPages());
+            model.addAttribute("requests", requestPageDTO.getContent());
+            model.addAttribute("currentPage", requestPageDTO.getCurrentPage());
+            model.addAttribute("totalPages", requestPageDTO.getTotalPages());
             model.addAttribute("sortTime", sortTime);
             model.addAttribute("sortName", sortName);
             model.addAttribute("filterName", filterName);
