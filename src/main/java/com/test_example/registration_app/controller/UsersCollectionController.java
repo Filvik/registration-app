@@ -1,6 +1,6 @@
 package com.test_example.registration_app.controller;
 
-import com.test_example.registration_app.dtos.UsersDto;
+import com.test_example.registration_app.dtos.UserDto;
 import com.test_example.registration_app.service.UserManipulationService;
 import com.test_example.registration_app.service.UsersConverterService;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +26,8 @@ public class UsersCollectionController {
     @PreAuthorize("hasAnyAuthority('Administrator')")
     public String getAllUsersFromBD(Model model) {
         try {
-            List<UsersDto> usersDtos = usersConverterService.convertFromUserToUserDto(userManipulationService.getAllUsersFromDB());
-            model.addAttribute("usersDtos", usersDtos);
+            List<UserDto> userDtos = usersConverterService.convertFromUserToUserDto(userManipulationService.getAllUsersFromDB());
+            model.addAttribute("usersDtos", userDtos);
             return "get_all_users";
         } catch (Exception e) {
             log.error("Error: " + e.getMessage());

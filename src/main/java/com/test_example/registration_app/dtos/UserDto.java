@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
-public class UsersDto {
+public class UserDto {
     private String fullName;
     private String email;
     private String phoneNumber;

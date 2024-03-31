@@ -1,6 +1,6 @@
 package com.test_example.registration_app.service;
 
-import com.test_example.registration_app.dtos.UsersDto;
+import com.test_example.registration_app.dtos.UserDto;
 import com.test_example.registration_app.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,18 +12,28 @@ import java.util.List;
 @Service
 public class UsersConverterService {
 
-    public List<UsersDto> convertFromUserToUserDto(List<User> users) {
-        List<UsersDto> usersDtos = new ArrayList<>();
+    public List<UserDto> convertFromUserToUserDto(List<User> users) {
+        List<UserDto> userDtos = new ArrayList<>();
         for (User user : users) {
-            UsersDto dto = new UsersDto(
+            UserDto dto = new UserDto(
                     user.getFullName(),
                     user.getEmail(),
                     user.getPhoneNumber(),
                     user.getCreatedAt(),
                     user.getUpdatedAt()
             );
-            usersDtos.add(dto);
+            userDtos.add(dto);
         }
-        return usersDtos;
+        return userDtos;
+    }
+
+    public UserDto convertFromUserToUserDto(User user) {
+        return new UserDto(
+                user.getFullName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getCreatedAt(),
+                user.getUpdatedAt()
+        );
     }
 }
