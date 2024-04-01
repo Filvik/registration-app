@@ -19,7 +19,7 @@
     </div>
     <h3>Assign New Role</h3>
     <form th:action="@{/assign}" method="post">
-        <input type="hidden" name="id" th:value="${userDto.id}" />
+        <input type="hidden" name="idUser" th:value="${idUser}" />
         <div class="mb-3">
             <label for="newRole" class="form-label">New Role</label>
             <select id="newRole" name="newRole" class="form-select">

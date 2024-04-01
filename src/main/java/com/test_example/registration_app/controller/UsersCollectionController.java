@@ -27,7 +27,7 @@ public class UsersCollectionController {
     public String getAllUsersFromBD(Model model) {
         try {
             List<UserDto> userDtos = usersConverterService.convertFromUserToUserDto(userManipulationService.getAllUsersFromDB());
-            model.addAttribute("usersDtos", userDtos);
+            model.addAttribute("userDtos", userDtos);
             return "get_all_users";
         } catch (Exception e) {
             log.error("Error: " + e.getMessage());

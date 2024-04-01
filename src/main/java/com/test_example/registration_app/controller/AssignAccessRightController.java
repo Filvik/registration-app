@@ -34,11 +34,12 @@ public class AssignAccessRightController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('Administrator')")
-    public String showEditForm(@RequestParam Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String showEditForm(@RequestParam Long idUser, Model model, RedirectAttributes redirectAttributes) {
         try {
-            User user = userManipulationService.getUserFromDB(id);
+            User user = userManipulationService.getUserFromDB(idUser);
             UserDto userDto = usersConverterService.convertFromUserToUserDto(user);
             model.addAttribute("userDto", userDto);
+            model.addAttribute("idUser", idUser);
             return "edit_user_role_form";
         } catch (Exception e) {
             log.warn("Error: " + e.getMessage());
@@ -49,10 +50,10 @@ public class AssignAccessRightController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('Administrator')")
-    public String assignAccessRight(Long id, Model model, RedirectAttributes redirectAttributes, Authentication authentication,
+    public String assignAccessRight(Long idUser, Model model, RedirectAttributes redirectAttributes, Authentication authentication,
                                     String newRole) {
         try {
-            User user = userManipulationService.addRoleForUser(id, newRole);
+            User user = userManipulationService.addRoleForUser(idUser, newRole);
             Long userId = user.getId();
             UserDto userDto = usersConverterService.convertFromUserToUserDto(userManipulationService.getUserFromDB(userId));
             Set<RoleDto> roleDtos = roleConverterService.convertFromRoleToRoleDto(roleManipulationService.getRoleFromDB(userId));

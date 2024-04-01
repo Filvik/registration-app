@@ -14,6 +14,7 @@
             <th>Full Name</th>
             <th>Email</th>
             <th>Phone Number</th>
+            <th>Roles</th>
             <th>Created At</th>
             <th>Updated At</th>
         </tr>
@@ -23,6 +24,11 @@
             <td th:text="${user.fullName}"></td>
             <td th:text="${user.email}"></td>
             <td th:text="${user.phoneNumber}"></td>
+            <td>
+                <ul th:if="${user.roles}">
+                <li th:each="role : ${user.roles}" th:text="${role.roleName}">Role</li>
+            </ul>
+            </td>
             <td th:text="${#dates.format(user.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
             <td th:text="${#dates.format(user.updatedAt, 'yyyy-MM-dd HH:mm')}"></td>
         </tr>
