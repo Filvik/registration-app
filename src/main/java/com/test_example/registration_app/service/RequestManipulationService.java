@@ -1,5 +1,6 @@
 package com.test_example.registration_app.service;
 
+import com.test_example.registration_app.enums.EnumStatus;
 import com.test_example.registration_app.model.Request;
 import com.test_example.registration_app.repository.RequestRepository;
 import com.test_example.registration_app.repository.UserRepository;
@@ -28,15 +29,6 @@ public class RequestManipulationService {
                 .orElse(Page.empty());
     }
 
-    @Transactional(readOnly = true)
-    public Page<Request> findRequestsByFilter(String filterName, Pageable pageable) {
-        if (filterName != null && !filterName.isEmpty()) {
-            return requestRepository.findByUserFullNameContainingIgnoreCase(filterName, pageable);
-        } else {
-            return requestRepository.findAll(pageable);
-        }
-    }
-
     public Pageable getPageable(int defaultSize, Sort.Direction sortDirection, String sortTime, int defaultPage) {
         String[] sortParams = sortTime.split(",");
         if (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1])) {
@@ -44,7 +36,6 @@ public class RequestManipulationService {
         }
         return PageRequest.of(defaultPage, defaultSize, Sort.by(sortDirection, sortParams[0]));
     }
-
 
     public Pageable getPageable(int defaultSize, String sortTime, String sortName, int defaultPage) {
         List<Sort.Order> orders = new ArrayList<>();
@@ -67,4 +58,22 @@ public class RequestManipulationService {
         }
         return pageable;
     }
+
+    @Transactional(readOnly = true)
+    public Page<Request> findRequestsByFilter(String filterName, Pageable pageable, boolean isAdmin) {
+        if (isAdmin) {
+            if (filterName != null && !filterName.isBlank()) {
+                return requestRepository.findByUserFullNameContainingIgnoreCaseAndStatusNot(filterName, EnumStatus.DRAFT, pageable);
+            } else {
+                return requestRepository.findByStatusNot(EnumStatus.DRAFT, pageable);
+            }
+        } else {
+            if (filterName != null && !filterName.isBlank()) {
+                return requestRepository.findByUserFullNameContainingIgnoreCaseAndStatus(filterName, EnumStatus.SENT, pageable);
+            } else {
+                return requestRepository.findByStatus(EnumStatus.SENT, pageable);
+            }
+        }
+    }
+
 }

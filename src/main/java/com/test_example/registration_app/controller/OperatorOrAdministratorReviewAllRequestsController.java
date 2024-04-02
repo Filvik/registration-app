@@ -2,6 +2,7 @@ package com.test_example.registration_app.controller;
 
 import com.test_example.registration_app.dtos.RequestPageDTO;
 import com.test_example.registration_app.model.Request;
+import com.test_example.registration_app.service.CheckRoleFromAuthService;
 import com.test_example.registration_app.service.RequestManipulationService;
 import com.test_example.registration_app.service.RequestPagesConverterService;
 import lombok.RequiredArgsConstructor;
@@ -21,30 +22,31 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/review")
 @RequiredArgsConstructor
-public class OperatorReviewAllController {
+public class OperatorOrAdministratorReviewAllRequestsController {
 
     private final RequestManipulationService requestManipulationService;
     private final RequestPagesConverterService requestPagesConverterService;
+    private final CheckRoleFromAuthService checkRoleFromAuthService;
 
-    @GetMapping("/fromUser")
-    @PreAuthorize("hasAnyAuthority('Operator', 'Administrator')")
+    @GetMapping("/requests")
+    @PreAuthorize("hasAnyAuthority('Operator','Administrator')")
     public String getRequests(Model model, Authentication authentication, RedirectAttributes redirectAttributes,
                               @RequestParam(value = "page", defaultValue = "0") int defaultPage,
                               @RequestParam(value = "sortTime", required = false) String sortTime,
-                              @RequestParam(value = "sortName",  required = false) String sortName,
+                              @RequestParam(value = "sortName", required = false) String sortName,
                               @RequestParam(value = "filterName", required = false) String filterName) {
         try {
             Pageable pageable = requestManipulationService.getPageable(5, sortTime, sortName, defaultPage);
-            Page<Request> requestPage = requestManipulationService.findRequestsByFilter(filterName, pageable);
+            boolean isAdmin = checkRoleFromAuthService.checkRole(authentication, "Administrator");
+            Page<Request> requestPage = requestManipulationService.findRequestsByFilter(filterName, pageable, isAdmin);
             RequestPageDTO requestPageDTO = requestPagesConverterService.toRequestPageDTO(requestPage);
-
             model.addAttribute("requests", requestPageDTO.getContent());
             model.addAttribute("currentPage", requestPageDTO.getCurrentPage());
             model.addAttribute("totalPages", requestPageDTO.getTotalPages());
             model.addAttribute("sortTime", sortTime);
             model.addAttribute("sortName", sortName);
             model.addAttribute("filterName", filterName);
-            return "requests_for_operator";
+            return "requests_for_operator_or_administrator";
         } catch (Exception e) {
             log.warn("Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());

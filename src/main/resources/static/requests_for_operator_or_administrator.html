@@ -9,8 +9,7 @@
 <div class="container mt-5">
     <h2 class="mb-4">Список заявок</h2>
 
-    <!-- Форма для фильтрации и поиска -->
-    <form th:action="@{/review/fromUser}" method="get" class="mb-4">
+    <form th:action="@{/review/requests}" method="get" class="mb-4">
         <div class="row g-3 align-items-center">
             <div class="col-auto">
                 <label for="userName" class="col-form-label">Имя пользователя:</label>
@@ -35,8 +34,8 @@
                         Сортировка
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownUserNameSort">
-                        <li><a class="dropdown-item" th:href="@{/review/fromUser(page=${currentPage}, sortName='user.fullName,asc', filterName=${filterName})}">A-Z</a></li>
-                        <li><a class="dropdown-item" th:href="@{/review/fromUser(page=${currentPage}, sortName='user.fullName,desc', filterName=${filterName})}">Z-A</a></li>
+                        <li><a class="dropdown-item" th:href="@{/review/requests(page=${currentPage}, sortName='user.fullName,asc', filterName=${filterName})}">A-Z</a></li>
+                        <li><a class="dropdown-item" th:href="@{/review/requests(page=${currentPage}, sortName='user.fullName,desc', filterName=${filterName})}">Z-A</a></li>
                     </ul>
                 </div>
             </th>
@@ -50,8 +49,8 @@
                         Сортировка
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" th:href="@{/review/fromUser(page=${currentPage}, sortTime='createdAt,asc', filterName=${filterName})}">Asc</a></li>
-                        <li><a class="dropdown-item" th:href="@{/review/fromUser(page=${currentPage}, sortTime='createdAt,desc', filterName=${filterName})}">Desc</a></li>
+                        <li><a class="dropdown-item" th:href="@{/review/requests(page=${currentPage}, sortTime='createdAt,asc', filterName=${filterName})}">Asc</a></li>
+                        <li><a class="dropdown-item" th:href="@{/review/requests(page=${currentPage}, sortTime='createdAt,desc', filterName=${filterName})}">Desc</a></li>
                     </ul>
                 </div>
             </th>
@@ -70,9 +69,9 @@
     </table>
 
     <div class="pagination-controls">
-        <a th:href="@{/review/fromUser(page=${currentPage - 1}, filterName=${filterName}, sortName=${sortName}, sortTime=${sortTime})}" aria-label="Previous" class="btn btn-secondary" th:classappend="${currentPage == 0} ? 'disabled' : ''">&laquo; Предыдущая</a>
+        <a th:href="@{/review/requests(page=${currentPage - 1}, filterName=${filterName}, sortName=${sortName}, sortTime=${sortTime})}" aria-label="Previous" class="btn btn-secondary" th:classappend="${currentPage == 0} ? 'disabled' : ''">&laquo; Предыдущая</a>
         <span th:text="${currentPage + 1}">1</span>
-        <a th:href="@{/review/fromUser(page=${currentPage + 1}, filterName=${filterName}, sortName=${sortName}, sortTime=${sortTime})}" aria-label="Next" class="btn btn-secondary" th:classappend="${currentPage + 1 == totalPages} ? 'disabled' : ''">Следующая &raquo;</a>
+        <a th:href="@{/review/requests(page=${currentPage + 1}, filterName=${filterName}, sortName=${sortName}, sortTime=${sortTime})}" aria-label="Next" class="btn btn-secondary" th:classappend="${currentPage + 1 == totalPages} ? 'disabled' : ''">Следующая &raquo;</a>
     </div>
     <a th:href="@{/logout}" class="btn btn-danger">Выйти</a>
 </div>
