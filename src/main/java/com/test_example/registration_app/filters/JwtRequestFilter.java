@@ -34,11 +34,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
             try {
-                username = jwtTokenUtils.getUsername(jwt);
+                if (jwtTokenUtils.validateToken(jwt)) {
+                    username = jwtTokenUtils.getUsername(jwt);
+                }
             } catch (ExpiredJwtException e) {
-                log.debug("Время жизни токена вышло");
+                log.debug("Token expired");
             } catch (SignatureException e) {
-                log.debug("Подпись неправильная");
+                log.debug("Invalid signature");
+            } catch (Exception e) {
+                log.debug("Token is invalid");
             }
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
