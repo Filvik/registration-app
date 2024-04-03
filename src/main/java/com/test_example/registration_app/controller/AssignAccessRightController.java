@@ -7,6 +7,9 @@ import com.test_example.registration_app.service.RoleConverterService;
 import com.test_example.registration_app.service.RoleManipulationService;
 import com.test_example.registration_app.service.UserManipulationService;
 import com.test_example.registration_app.service.UsersConverterService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +28,7 @@ import java.util.Set;
 @Controller
 @RequestMapping("/assign")
 @RequiredArgsConstructor
+@Tag(name = "AssignAccessRightController", description = "Контроллер для назначения прав доступа пользователям")
 public class AssignAccessRightController {
 
     private final UsersConverterService usersConverterService;
@@ -34,7 +38,10 @@ public class AssignAccessRightController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('Administrator')")
-    public String showEditForm(@RequestParam Long idUser, Model model, RedirectAttributes redirectAttributes) {
+    @Operation(summary = "Показать форму назначения прав доступа",
+            description = "Показывает форму для назначения прав доступа пользователям")
+    public String showEditForm(@Parameter(description = "ID пользователя") @RequestParam Long idUser,
+                               Model model, RedirectAttributes redirectAttributes) {
         try {
             User user = userManipulationService.getUserFromDB(idUser);
             UserDto userDto = usersConverterService.convertFromUserToUserDto(user);
@@ -50,8 +57,12 @@ public class AssignAccessRightController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('Administrator')")
-    public String assignAccessRight(Long idUser, Model model, RedirectAttributes redirectAttributes, Authentication authentication,
-                                    String newRole) {
+    @Operation(summary = "Назначить права доступа",
+            description = "Назначает новые права доступа пользователю")
+    public String assignAccessRight(@Parameter(description = "ID пользователя") @RequestParam Long idUser,
+                                    Model model, RedirectAttributes redirectAttributes,
+                                    Authentication authentication,
+                                    @Parameter(description = "Новая роль пользователя ('User', 'Operator' или 'Administrator')") @RequestParam String newRole) {
         try {
             User user = userManipulationService.addRoleForUser(idUser, newRole);
             Long userId = user.getId();

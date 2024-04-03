@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/getUsers")
 @RequiredArgsConstructor
+@Tag(name = "UsersCollectionController", description = "Контроллер для работы со списком пользователей")
 public class UsersCollectionController {
 
     private final UsersConverterService usersConverterService;
@@ -24,6 +27,7 @@ public class UsersCollectionController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('Administrator')")
+    @Operation(summary = "Получить всех пользователей", description = "Возвращает список всех пользователей из базы данных")
     public String getAllUsersFromBD(Model model) {
         try {
             List<UserDto> userDtos = usersConverterService.convertFromUserToUserDto(userManipulationService.getAllUsersFromDB());

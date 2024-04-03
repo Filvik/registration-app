@@ -5,6 +5,9 @@ import com.test_example.registration_app.model.Request;
 import com.test_example.registration_app.service.CheckRoleFromAuthService;
 import com.test_example.registration_app.service.RequestManipulationService;
 import com.test_example.registration_app.service.RequestPagesConverterService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("/review")
 @RequiredArgsConstructor
+@Tag(name = "OperatorOrAdministratorReviewAllRequestsController", description = "Контроллер для просмотра всех заявок оператором или администратором")
 public class OperatorOrAdministratorReviewAllRequestsController {
 
     private final RequestManipulationService requestManipulationService;
@@ -30,11 +34,12 @@ public class OperatorOrAdministratorReviewAllRequestsController {
 
     @GetMapping("/requests")
     @PreAuthorize("hasAnyAuthority('Operator','Administrator')")
+    @Operation(summary = "Просмотр всех заявок", description = "Позволяет операторам и администраторам просматривать все заявки с возможностью сортировки и фильтрации")
     public String getRequests(Model model, Authentication authentication, RedirectAttributes redirectAttributes,
-                              @RequestParam(value = "page", defaultValue = "0") int defaultPage,
-                              @RequestParam(value = "sortTime", required = false) String sortTime,
-                              @RequestParam(value = "sortName", required = false) String sortName,
-                              @RequestParam(value = "filterName", required = false) String filterName) {
+                              @Parameter(description = "Номер страницы для пагинации, по умолчанию 0") @RequestParam(value = "page", defaultValue = "0") int defaultPage,
+                              @Parameter(description = "Критерий сортировки по времени") @RequestParam(value = "sortTime", required = false) String sortTime,
+                              @Parameter(description = "Критерий сортировки по имени") @RequestParam(value = "sortName", required = false) String sortName,
+                              @Parameter(description = "Фильтрация по имени") @RequestParam(value = "filterName", required = false) String filterName) {
         try {
             Pageable pageable = requestManipulationService.getPageable(5, sortTime, sortName, defaultPage);
             boolean isAdmin = checkRoleFromAuthService.checkRole(authentication, "Administrator");

@@ -1,4 +1,4 @@
-package com.test_example.registration_app.controller;
+package com.test_example.registration_app.exeption_controller;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;

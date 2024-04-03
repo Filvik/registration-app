@@ -27,6 +27,11 @@ public class SecurityConfig {
 
     private final UserService userService;
     private final JwtRequestFilter jwtRequestFilter;
+    private static final String[] AUTH_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,16 +39,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET,AUTH_WHITELIST).permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                         .requestMatchers(HttpMethod.POST, "/registration").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/create-request-form").hasAnyAuthority("User","Operator")
-                        .requestMatchers(HttpMethod.POST, "/api/create-request").hasAnyAuthority("User","Operator")
-                        .requestMatchers(HttpMethod.GET, "/api/created-request/**").hasAnyAuthority("User","Operator")
                         .requestMatchers(HttpMethod.POST, "/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole("Administrator")
-                        .requestMatchers(HttpMethod.PUT, "/**").hasRole("Administrator"))
-                .formLogin(form -> form
+                        .requestMatchers(HttpMethod.PUT, "/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole("Administrator"))
+                        .formLogin(form -> form
                         .loginPage("/login")
                         .failureUrl("/login-error")
                         .successHandler(new CustomAuthenticationSuccessHandler())
@@ -54,6 +57,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+
 
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
