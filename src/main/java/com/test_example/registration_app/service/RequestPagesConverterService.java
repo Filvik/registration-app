@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RequestPagesConverterService {
 
-    private final RequestDtoConverterService requestDtoConverterService;
+    private final RequestConverterService requestConverterService;
 
     public RequestPageDTO toRequestPageDTO(Page<Request> requestPage) {
         RequestPageDTO requestPageDTO = new RequestPageDTO();
@@ -24,6 +24,6 @@ public class RequestPagesConverterService {
     }
 
     private RequestDto toDto(Request request) {
-        return requestDtoConverterService.fromRequestToRequestDto(request);
+        return requestConverterService.fromRequestToRequestDto(request);
     }
 }

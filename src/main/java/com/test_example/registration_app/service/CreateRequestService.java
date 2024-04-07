@@ -24,7 +24,7 @@ public class CreateRequestService {
     @Transactional
     public Request createRequest(RequestDto requestDto) {
 
-        RequestDtoConverterService.validateRequestDto(requestDto);
+        RequestConverterService.validateRequestDto(requestDto);
 
         Optional<User> userOptional = userRepository.findByFullName(requestDto.getUserName());
         if (userOptional.isPresent()) {

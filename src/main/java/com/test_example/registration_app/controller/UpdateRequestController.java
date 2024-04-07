@@ -3,7 +3,7 @@ package com.test_example.registration_app.controller;
 import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.enums.EnumStatus;
 import com.test_example.registration_app.model.Request;
-import com.test_example.registration_app.service.RequestDtoConverterService;
+import com.test_example.registration_app.service.RequestConverterService;
 import com.test_example.registration_app.service.UpdateRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class UpdateRequestController {
 
     private final UpdateRequestService updateRequestService;
-    private final RequestDtoConverterService requestDtoConverterService;
+    private final RequestConverterService requestConverterService;
 
     @GetMapping("/edit")
     @PreAuthorize("hasAnyAuthority('User')")
@@ -37,7 +37,7 @@ public class UpdateRequestController {
             if (!request.getStatus().equals(EnumStatus.DRAFT)){
                 return "redirect:/api/created-request/" + request.getId();
             }
-            RequestDto requestDto = requestDtoConverterService.fromRequestToRequestDto(request);
+            RequestDto requestDto = requestConverterService.fromRequestToRequestDto(request);
             model.addAttribute("request", requestDto);
             model.addAttribute("idRequest", idRequest);
             return "edit_request_by_id";

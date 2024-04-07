@@ -2,7 +2,7 @@ package com.test_example.registration_app.controller;
 
 import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.model.Request;
-import com.test_example.registration_app.service.RequestDtoConverterService;
+import com.test_example.registration_app.service.RequestConverterService;
 import com.test_example.registration_app.service.SendRequestForReviewService;
 import com.test_example.registration_app.service.UpdateRequestService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class SendRequestForReviewController {
 
     private final SendRequestForReviewService sendRequestForReviewService;
     private final UpdateRequestService updateRequestService;
-    private final RequestDtoConverterService requestDtoConverterService;
+    private final RequestConverterService requestConverterService;
 
     @GetMapping("/review")
     @PreAuthorize("hasAnyAuthority('User')")
@@ -38,7 +38,7 @@ public class SendRequestForReviewController {
         try {
             Request requestFromDb = updateRequestService.getRequestById(idRequest);
             if (updateRequestService.checkName(requestFromDb.getUser().getFullName(), authentication.getName())) {
-                RequestDto request = requestDtoConverterService.fromRequestToRequestDto(requestFromDb);
+                RequestDto request = requestConverterService.fromRequestToRequestDto(requestFromDb);
                 model.addAttribute("request", request);
                 model.addAttribute("idRequest", idRequest);
                 return "send_for_review";

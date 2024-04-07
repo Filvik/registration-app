@@ -3,7 +3,7 @@ package com.test_example.registration_app.controller;
 import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.enums.EnumStatus;
 import com.test_example.registration_app.model.Request;
-import com.test_example.registration_app.service.RequestDtoConverterService;
+import com.test_example.registration_app.service.RequestConverterService;
 import com.test_example.registration_app.service.UpdateRequestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,7 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Tag(name = "AcceptRequestController", description = "Контроллер для принятия или отклонения заявок оператором")
 public class AcceptRequestController {
 
-    private final RequestDtoConverterService requestDtoConverterService;
+    private final RequestConverterService requestConverterService;
     private final UpdateRequestService updateRequestService;
 
     @GetMapping
@@ -34,7 +34,7 @@ public class AcceptRequestController {
         try {
             Request request = updateRequestService.getRequestById(idRequest);
             if (request.getStatus().equals(EnumStatus.SENT)) {
-                RequestDto requestDto = requestDtoConverterService.fromRequestToRequestDto(request);
+                RequestDto requestDto = requestConverterService.fromRequestToRequestDto(request);
                 model.addAttribute("request", requestDto);
                 model.addAttribute("idRequest", idRequest);
                 return "send_accept_from_operator";
@@ -59,7 +59,7 @@ public class AcceptRequestController {
         try {
             Request requestFromDb = updateRequestService.getRequestById(idRequest);
             Request requestSendAction = updateRequestService.sendAccept(requestFromDb, action);
-            RequestDto request = requestDtoConverterService.fromRequestToRequestDto(requestSendAction);
+            RequestDto request = requestConverterService.fromRequestToRequestDto(requestSendAction);
             model.addAttribute("request", request);
             return "request_details";
         } catch (Exception e) {

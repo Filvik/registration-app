@@ -10,9 +10,7 @@
     <h1>Error Page</h1>
     <div class="alert alert-danger" role="alert">
         <h4 class="alert-heading">Oops! Something went wrong.</h4>
-        <!-- Отображение сообщения об ошибке -->
         <p th:text="${errorMessage}">An unexpected error occurred. Please try again later.</p>
-        <!-- Отображение комментария, если он есть -->
         <p th:if="${errorComment}" th:text="${errorComment}"></p>
     </div>
     <a href="/universalFormPage" class="btn btn-primary">Go Home</a>

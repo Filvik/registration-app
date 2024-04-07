@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RequestDtoConverterService {
+public class RequestConverterService {
 
     private final UserRepository userRepository;
 
