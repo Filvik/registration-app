@@ -40,8 +40,7 @@ public class SecurityConfig {
             "/noAuthorizationError"
     };
     private static final String[] AUTH_WHITELIST = {
-            "/auth",
-            "/registration"
+            "/auth"
     };
 
 

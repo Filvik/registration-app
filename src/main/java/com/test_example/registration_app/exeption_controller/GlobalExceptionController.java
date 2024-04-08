@@ -10,6 +10,6 @@ public class GlobalExceptionController {
     @ExceptionHandler(Exception.class)
     public String handleException(Exception ex, Model model) {
         model.addAttribute("errorMessage", "An error occurred: " + ex.getMessage());
-        return "/error";
+        return "error";
     }
 }

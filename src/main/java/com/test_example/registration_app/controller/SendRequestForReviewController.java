@@ -62,7 +62,7 @@ public class SendRequestForReviewController {
                                        Authentication authentication) {
         try {
             Request request = sendRequestForReviewService.sendForReview(idRequest, authentication.getName());
-            return "redirect:/api/created-request/" + request.getId();
+            return "redirect:/api/createdRequest/" + request.getId();
         } catch (Exception e) {
             log.warn("Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());

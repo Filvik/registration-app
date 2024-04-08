@@ -11,6 +11,6 @@ public class GlobalAccessDeniedExceptionController {
     @ExceptionHandler(AccessDeniedException.class)
     public String handleAccessDeniedException(AccessDeniedException ex, Model model) {
         model.addAttribute("errorMessage", "You don't have permission to access this page.");
-        return "/error";
+        return "error";
     }
 }

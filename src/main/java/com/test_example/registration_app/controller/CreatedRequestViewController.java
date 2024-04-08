@@ -29,7 +29,7 @@ public class CreatedRequestViewController {
     private final RequestConverterService requestConverterService;
     private final UpdateRequestService updateRequestService;
 
-    @GetMapping("/created-request/{id}")
+    @GetMapping("/createdRequest/{id}")
     @PreAuthorize("hasAnyAuthority('Operator')")
     @Operation(summary = "Получение заявки по ID",
             description = "Позволяет оператору получить детали заявки по её ID")

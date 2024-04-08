@@ -35,7 +35,7 @@ public class UpdateRequestController {
         try {
             Request request = updateRequestService.getRequestById(idRequest);
             if (!request.getStatus().equals(EnumStatus.DRAFT)){
-                return "redirect:/api/created-request/" + request.getId();
+                return "redirect:/api/createdRequest/" + request.getId();
             }
             RequestDto requestDto = requestConverterService.fromRequestToRequestDto(request);
             model.addAttribute("request", requestDto);
@@ -63,7 +63,7 @@ public class UpdateRequestController {
             } else {
                 log.info("No changes detected for request with ID: {}. Skipping database update.", idRequest);
             }
-            return "redirect:/api/created-request/" + requestToUpdate.getId();
+            return "redirect:/api/createdRequest/" + requestToUpdate.getId();
         }
         catch (Exception e) {
             log.warn("Error: " + e.getMessage());
