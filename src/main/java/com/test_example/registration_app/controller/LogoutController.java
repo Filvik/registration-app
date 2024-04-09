@@ -31,7 +31,7 @@ public class LogoutController {
             String jti = logoutService.extractJti(token);
             Long expirationTime = logoutService.extractExpirationTime(token);
             tokenBlacklistService.blacklistToken(jti, expirationTime - System.currentTimeMillis());
-            log.info("User logged out and token invalidated");
+            log.info("Пользователь вышел из системы, токен признан недействительным.");
             model.addAttribute("logoutMessage", "Вы успешно вышли из системы.");
         } catch (Exception e) {
             log.error("Ошибка при выходе: ", e);

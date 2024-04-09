@@ -14,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -30,7 +29,7 @@ public class AcceptRequestController {
     @PreAuthorize("hasAnyAuthority('Operator')")
     @Operation(summary = "Показать форму редактирования", description = "Показывает форму для принятия или отклонения заявки оператором")
     public String showEditForm(@Parameter(description = "ID заявки для редактирования")@RequestParam Long idRequest,
-                               Model model, RedirectAttributes redirectAttributes) {
+                               Model model) {
         try {
             Request request = updateRequestService.getRequestById(idRequest);
             if (request.getStatus().equals(EnumStatus.SENT)) {
@@ -40,13 +39,13 @@ public class AcceptRequestController {
                 return "send_accept_from_operator";
             } else {
                 log.warn("Error status. Status: " + request.getStatus());
-                redirectAttributes.addFlashAttribute("errorMessage", "Error status. Status: " + request.getStatus());
-                return "redirect:/error";
+                model.addAttribute("errorMessage", "Error status. Status: " + request.getStatus());
+                return "error";
             }
         } catch (Exception e) {
             log.warn("Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
-            return "redirect:/error";
+            model.addAttribute("errorMessage", "Error: " + e.getMessage());
+            return "error";
         }
     }
 
@@ -54,8 +53,8 @@ public class AcceptRequestController {
     @PreAuthorize("hasAnyAuthority('Operator')")
     @Operation(summary = "Принять или отклонить заявку", description = "Позволяет оператору принять или отклонить заявку")
     public String sendAcceptRequest( @Parameter(description = "ID заявки для действия") @RequestParam Long idRequest,
-                                     @Parameter(description = "Действие с заявкой ('accept' или 'reject')") @RequestParam String action,
-                                     RedirectAttributes redirectAttributes, Model model) {
+                                     @Parameter(description = "Действие с заявкой ('accept' или 'reject')")
+                                     @RequestParam String action, Model model) {
         try {
             Request requestFromDb = updateRequestService.getRequestById(idRequest);
             Request requestSendAction = updateRequestService.sendAccept(requestFromDb, action);
@@ -64,8 +63,8 @@ public class AcceptRequestController {
             return "request_details";
         } catch (Exception e) {
             log.warn("Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
-            return "redirect:/error";
+            model.addAttribute("errorMessage", "Error: " + e.getMessage());
+            return "error";
         }
     }
 }

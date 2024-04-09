@@ -23,22 +23,27 @@ public class CreateRequestService {
 
     @Transactional
     public Request createRequest(RequestDto requestDto) {
+        if (requestDto.getStatus().equals("DRAFT") ||
+                requestDto.getStatus().equals("SENT")) {
+            RequestConverterService.validateRequestDto(requestDto);
 
-        RequestConverterService.validateRequestDto(requestDto);
+            Optional<User> userOptional = userRepository.findByFullName(requestDto.getUserName());
+            if (userOptional.isPresent()) {
 
-        Optional<User> userOptional = userRepository.findByFullName(requestDto.getUserName());
-        if (userOptional.isPresent()) {
+                Request request = new Request();
+                request.setUser(userOptional.get());
+                request.setId(userOptional.get().getId());
+                request.setStatus(Enum.valueOf(EnumStatus.class, requestDto.getStatus().toUpperCase()));
+                request.setText(requestDto.getText());
 
-            Request request = new Request();
-            request.setUser(userOptional.get());
-            request.setId(userOptional.get().getId());
-            request.setStatus(Enum.valueOf(EnumStatus.class, requestDto.getStatus().toUpperCase()));
-            request.setText(requestDto.getText());
-
-            return requestRepository.saveAndFlush(request);
+                return requestRepository.saveAndFlush(request);
+            } else {
+                log.error("User with UserName " + requestDto.getUserName() + " not found");
+                throw new IllegalArgumentException("User with UserName " + requestDto.getUserName() + " not found");
+            }
         } else {
-            log.error("User with UserName " + requestDto.getUserName() + " not found");
-            throw new IllegalArgumentException("User with UserName " + requestDto.getUserName() + " not found");
+            log.error("User with UserName " + requestDto.getUserName() + " does not have rights for this status");
+            throw new IllegalArgumentException("User with UserName " + requestDto.getUserName() + "  does not have rights for this status");
         }
     }
 }

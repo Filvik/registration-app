@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,15 +36,23 @@ public class CreateRequestController {
     @PreAuthorize("hasAnyAuthority('User')")
     @Operation(summary = "Создание заявки",
             description = "Создает новую заявку на основе предоставленных данных")
-    public String createRequest(@Parameter(description = "DTO новой заявки") @ModelAttribute RequestDto requestDto, Model model) {
-        try {
-            Request request = createRequestService.createRequest(requestDto);
-            requestDto = requestConverterService.fromRequestToRequestDto(request);
-            model.addAttribute("requestDto", requestDto);
-            return "request_was_successfully_created";
-        } catch (Exception e) {
-            log.warn("Error: " + e.getMessage());
-            model.addAttribute("errorMessage", "Error: " + e.getMessage());
+    public String createRequest(@Parameter(description = "DTO новой заявки") @ModelAttribute RequestDto requestDto,
+                                Model model,
+                                Authentication authentication) {
+        if (authentication.getName().equals(requestDto.getUserName())) {
+            try {
+                Request request = createRequestService.createRequest(requestDto);
+                requestDto = requestConverterService.fromRequestToRequestDto(request);
+                model.addAttribute("requestDto", requestDto);
+                return "request_was_successfully_created";
+            } catch (Exception e) {
+                log.warn("Error: " + e.getMessage());
+                model.addAttribute("errorMessage", "Error: " + e.getMessage());
+                return "error";
+            }
+        } else {
+            log.warn("Error user ");
+            model.addAttribute("errorMessage", "You aren't request owner");
             return "error";
         }
     }

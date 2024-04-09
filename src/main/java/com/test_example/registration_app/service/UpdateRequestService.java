@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 
+import static com.test_example.registration_app.enums.EnumStatus.SENT;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -22,22 +24,28 @@ public class UpdateRequestService {
     public void updateRequestFromDto(Request requestToUpdate, RequestDto requestDto) {
 
         if (requestToUpdate == null || requestDto == null) {
-            log.error("Attempted to update a request with a null entity or DTO.");
-            throw new IllegalArgumentException("Request to update or RequestDto is null");
+            log.error("Попытка обновить запрос с помощью нулевой сущности или DTO.");
+            throw new IllegalArgumentException("Попытка обновить запрос с помощью нулевой сущности или DTO.");
         }
 
-        EnumStatus status = EnumStatus.valueOf(requestDto.getStatus().toUpperCase());
-        log.info("Updating request with ID: {}", requestToUpdate.getId());
-        try {
-            requestToUpdate.setText(requestDto.getText());
-            requestToUpdate.setStatus(status);
-        } catch (IllegalArgumentException e) {
-            log.error("Invalid status value '{}' provided for request ID: {}", requestDto.getStatus(), requestToUpdate.getId());
-            throw new IllegalArgumentException("Invalid status value: " + requestDto.getStatus());
-        }
-        requestToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+        if (requestDto.getStatus().equals("SENT")){
+            EnumStatus status = EnumStatus.valueOf(requestDto.getStatus().toUpperCase());
+            log.info("Обновление запроса с помощью ID: {}", requestToUpdate.getId());
+            try {
+                requestToUpdate.setText(requestDto.getText());
+                requestToUpdate.setStatus(status);
+            } catch (IllegalArgumentException e) {
+                log.error("Недопустимое значение статуса '{}' предоставлено для идентификатора запроса: {}", requestDto.getStatus(), requestToUpdate.getId());
+                throw new IllegalArgumentException("Недопустимое значение статуса: " + requestDto.getStatus());
+            }
+            requestToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
-        requestRepository.saveAndFlush(requestToUpdate);
+            requestRepository.saveAndFlush(requestToUpdate);
+        }
+        else {
+            log.error("Неверное значение статуса '{}'", requestDto.getStatus());
+            throw new IllegalArgumentException("Неверное значение статуса: " + requestDto.getStatus());
+        }
     }
 
     public static boolean isUpdated(Request requestToUpdate, RequestDto requestDto) {
@@ -55,8 +63,9 @@ public class UpdateRequestService {
         return nameFromRequest.equals(nameFromAuth);
     }
 
+    @Transactional
     public Request sendAccept(Request request, String action) {
-        if (request.getStatus().equals(EnumStatus.SENT)) {
+        if (request.getStatus().equals(SENT)) {
             if (action.equals("accept")) {
                 request.setStatus(EnumStatus.ACCEPTED);
             } else if (action.equals("reject")) {
@@ -64,8 +73,8 @@ public class UpdateRequestService {
             }
             requestRepository.saveAndFlush(request);
         } else {
-            log.error("Invalid status value '{}'", request.getStatus());
-            throw new IllegalArgumentException("Invalid status value: " + request.getStatus());
+            log.error("Неверное значение статуса '{}'", request.getStatus());
+            throw new IllegalArgumentException("Неверное значение статуса: " + request.getStatus());
         }
         return request;
     }

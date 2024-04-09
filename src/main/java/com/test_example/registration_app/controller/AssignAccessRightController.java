@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Set;
 
@@ -41,7 +40,7 @@ public class AssignAccessRightController {
     @Operation(summary = "Показать форму назначения прав доступа",
             description = "Показывает форму для назначения прав доступа пользователям")
     public String showEditForm(@Parameter(description = "ID пользователя") @RequestParam Long idUser,
-                               Model model, RedirectAttributes redirectAttributes) {
+                               Model model) {
         try {
             User user = userManipulationService.getUserFromDB(idUser);
             UserDto userDto = usersConverterService.convertFromUserToUserDto(user);
@@ -50,8 +49,8 @@ public class AssignAccessRightController {
             return "edit_user_role_form";
         } catch (Exception e) {
             log.warn("Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Error retrieving user: " + e.getMessage());
-            return "redirect:/error";
+            model.addAttribute("errorMessage", "Error retrieving user: " + e.getMessage());
+            return "error";
         }
     }
 
@@ -60,9 +59,10 @@ public class AssignAccessRightController {
     @Operation(summary = "Назначить права доступа",
             description = "Назначает новые права доступа пользователю")
     public String assignAccessRight(@Parameter(description = "ID пользователя") @RequestParam Long idUser,
-                                    Model model, RedirectAttributes redirectAttributes,
+                                    Model model,
                                     Authentication authentication,
-                                    @Parameter(description = "Новая роль пользователя ('User', 'Operator' или 'Administrator')") @RequestParam String newRole) {
+                                    @Parameter(description = "Новая роль пользователя ('User', 'Operator' или 'Administrator')")
+                                    @RequestParam String newRole) {
         try {
             User user = userManipulationService.addRoleForUser(idUser, newRole);
             Long userId = user.getId();
@@ -74,8 +74,8 @@ public class AssignAccessRightController {
             return "added_new_role";
         } catch (Exception e) {
             log.warn("Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
-            return "redirect:/error";
+            model.addAttribute("errorMessage", "Error: " + e.getMessage());
+            return "error";
         }
     }
 }

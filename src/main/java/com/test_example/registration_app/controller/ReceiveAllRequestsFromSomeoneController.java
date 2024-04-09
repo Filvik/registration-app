@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +34,6 @@ public class ReceiveAllRequestsFromSomeoneController {
             description = "Позволяет пользователю получить список всех своих заявок с пагинацией и сортировкой")
     public String getRequests(Model model,
                               Authentication authentication,
-                              RedirectAttributes redirectAttributes,
                               @Parameter(description = "Номер страницы для пагинации, по умолчанию 0")
                               @RequestParam(value = "page", defaultValue = "0") int defaultPage,
                               @Parameter(description = "Критерий сортировки, по умолчанию по дате создания, возрастание")
@@ -52,8 +50,8 @@ public class ReceiveAllRequestsFromSomeoneController {
             return "requests_for_user";
         } catch (Exception e) {
             log.warn("Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
-            return "redirect:/error";
+            model.addAttribute("errorMessage", "Error: " + e.getMessage());
+            return "error";
         }
     }
 }

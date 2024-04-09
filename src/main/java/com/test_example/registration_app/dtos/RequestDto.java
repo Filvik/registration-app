@@ -16,4 +16,5 @@ public class RequestDto {
     private String status;
     private String text;
     private Timestamp createdAt;
+    private Timestamp updatedAt;
 }

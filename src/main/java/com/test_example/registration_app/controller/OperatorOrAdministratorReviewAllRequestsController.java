@@ -19,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -35,7 +34,7 @@ public class OperatorOrAdministratorReviewAllRequestsController {
     @GetMapping("/requests")
     @PreAuthorize("hasAnyAuthority('Operator','Administrator')")
     @Operation(summary = "Просмотр всех заявок", description = "Позволяет операторам и администраторам просматривать все заявки с возможностью сортировки и фильтрации")
-    public String getRequests(Model model, Authentication authentication, RedirectAttributes redirectAttributes,
+    public String getRequests(Model model, Authentication authentication,
                               @Parameter(description = "Номер страницы для пагинации, по умолчанию 0") @RequestParam(value = "page", defaultValue = "0") int defaultPage,
                               @Parameter(description = "Критерий сортировки по времени") @RequestParam(value = "sortTime", required = false) String sortTime,
                               @Parameter(description = "Критерий сортировки по имени") @RequestParam(value = "sortName", required = false) String sortName,
@@ -54,8 +53,8 @@ public class OperatorOrAdministratorReviewAllRequestsController {
             return "requests_for_operator_or_administrator";
         } catch (Exception e) {
             log.warn("Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
-            return "redirect:/error";
+            model.addAttribute("errorMessage", "Error: " + e.getMessage());
+            return "error";
         }
     }
 }

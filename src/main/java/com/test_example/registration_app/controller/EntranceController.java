@@ -9,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -21,7 +20,7 @@ public class EntranceController {
     @Operation(summary = "Универсальная страница формы",
             description = "Предоставляет доступ к универсальной странице формы для пользователей с ролями User, Operator и Administrator",
             security = @SecurityRequirement(name = "bearerAuth"))
-    public String adminAction(Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
+    public String adminAction(Model model, Authentication authentication) {
         try {
             model.addAttribute("username", authentication.getName());
             model.addAttribute("authorities", authentication.getAuthorities());
@@ -29,8 +28,8 @@ public class EntranceController {
         }
         catch (Exception e) {
             log.warn("Error: " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
-            return "redirect:/error";
+            model.addAttribute("errorMessage", "Error: " + e.getMessage());
+            return "error";
         }
     }
 }
