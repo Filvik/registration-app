@@ -38,7 +38,7 @@ public class AssignAccessRightController {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('Administrator')")
     @Operation(summary = "Показать форму назначения прав доступа",
-            description = "Показывает форму для назначения прав доступа пользователям")
+            description = "Показывает форму для назначения прав доступа пользователям. Доступен только администраторам.")
     public String showEditForm(@Parameter(description = "ID пользователя") @RequestParam Long idUser,
                                Model model) {
         try {
@@ -57,7 +57,7 @@ public class AssignAccessRightController {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('Administrator')")
     @Operation(summary = "Назначить права доступа",
-            description = "Назначает новые права доступа пользователю")
+            description = "Назначает новые права доступа пользователю. Доступен только администраторам.")
     public String assignAccessRight(@Parameter(description = "ID пользователя") @RequestParam Long idUser,
                                     Model model,
                                     Authentication authentication,

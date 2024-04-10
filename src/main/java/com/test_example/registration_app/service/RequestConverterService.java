@@ -28,6 +28,7 @@ public class RequestConverterService {
         request.setUuid(dto.getUuid());
         request.setText(dto.getText());
         request.setCreatedAt(dto.getCreatedAt());
+        request.setUpdatedAt(dto.getUpdatedAt());
             try {
                 request.setStatus(EnumStatus.valueOf(dto.getStatus().toUpperCase()));
             } catch (IllegalArgumentException e) {
@@ -48,6 +49,7 @@ public class RequestConverterService {
         dto.setStatus(String.valueOf(request.getStatus()));
         dto.setText(request.getText());
         dto.setCreatedAt(request.getCreatedAt());
+        dto.setUpdatedAt(request.getUpdatedAt());
 
         return dto;
     }

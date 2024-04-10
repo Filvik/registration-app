@@ -27,7 +27,8 @@ public class AcceptRequestController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('Operator')")
-    @Operation(summary = "Показать форму редактирования", description = "Показывает форму для принятия или отклонения заявки оператором")
+    @Operation(summary = "Показать форму редактирования",
+            description = "Показывает форму для принятия или отклонения заявки оператором. Доступен только операторам.")
     public String showEditForm(@Parameter(description = "ID заявки для редактирования")@RequestParam Long idRequest,
                                Model model) {
         try {
@@ -51,7 +52,8 @@ public class AcceptRequestController {
 
     @PutMapping
     @PreAuthorize("hasAnyAuthority('Operator')")
-    @Operation(summary = "Принять или отклонить заявку", description = "Позволяет оператору принять или отклонить заявку")
+    @Operation(summary = "Принять или отклонить заявку",
+            description = "Позволяет оператору принять или отклонить заявку. Доступен только операторам.")
     public String sendAcceptRequest( @Parameter(description = "ID заявки для действия") @RequestParam Long idRequest,
                                      @Parameter(description = "Действие с заявкой ('accept' или 'reject')")
                                      @RequestParam String action, Model model) {

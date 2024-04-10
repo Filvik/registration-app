@@ -23,7 +23,8 @@ public class LogoutController {
     private final LogoutService logoutService;
 
     @PostMapping
-    @Operation(summary = "Выход пользователя", description = "Отображает страницу выхода и делает недействительным токен JWT.")
+    @Operation(summary = "Выход пользователя",
+            description = "Отображает страницу выхода и делает недействительным токен JWT. Доступен только аутентифицированным поьзователям.")
     public String logout(
             @RequestHeader("Authorization") String token,
             Model model) {

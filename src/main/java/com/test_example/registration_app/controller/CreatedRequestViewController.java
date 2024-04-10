@@ -32,7 +32,7 @@ public class CreatedRequestViewController {
     @GetMapping("/createdRequest/{id}")
     @PreAuthorize("hasAnyAuthority('Operator')")
     @Operation(summary = "Получение заявки по ID",
-            description = "Позволяет оператору получить детали заявки по её ID")
+            description = "Позволяет оператору получить детали заявки по её ID. Доступен только операторам.")
     public String getRequestById(@Parameter(description = "ID заявки") @PathVariable Long id,
                                  Model model,
                                  Authentication authentication) {

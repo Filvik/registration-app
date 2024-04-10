@@ -14,7 +14,7 @@ public class UserAuthorizationError {
 
     @GetMapping
     @Operation(summary = "Показать страницу ошибки",
-            description = "Отображение страницы ошибки с сообщением об ошибке")
+            description = "Отображение страницы ошибки с сообщением об ошибке. Доступен любым пользователям")
     public String showErrorPage(
             @Parameter(description = "Сообщение об ошибке для отображения на странице")
             @RequestParam(value = "error", required = false) String errorMessage,

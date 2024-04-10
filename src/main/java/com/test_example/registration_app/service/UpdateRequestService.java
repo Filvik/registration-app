@@ -28,7 +28,8 @@ public class UpdateRequestService {
             throw new IllegalArgumentException("Попытка обновить запрос с помощью нулевой сущности или DTO.");
         }
 
-        if (requestDto.getStatus().equals("SENT")){
+        if (requestDto.getStatus().equals("SENT") &&
+                (!requestToUpdate.getStatus().equals(SENT) || !requestToUpdate.getText().equals(requestDto.getText()))) {
             EnumStatus status = EnumStatus.valueOf(requestDto.getStatus().toUpperCase());
             log.info("Обновление запроса с помощью ID: {}", requestToUpdate.getId());
             try {
@@ -41,8 +42,7 @@ public class UpdateRequestService {
             requestToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
             requestRepository.saveAndFlush(requestToUpdate);
-        }
-        else {
+        } else {
             log.error("Неверное значение статуса '{}'", requestDto.getStatus());
             throw new IllegalArgumentException("Неверное значение статуса: " + requestDto.getStatus());
         }
@@ -56,7 +56,7 @@ public class UpdateRequestService {
 
     public Request getRequestById(Long idRequest) {
         return requestRepository.findById(idRequest)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid request Id: " + idRequest));
+                .orElseThrow(() -> new IllegalArgumentException("Некорректный Id: " + idRequest));
     }
 
     public boolean checkName(String nameFromRequest, String nameFromAuth) {

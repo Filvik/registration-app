@@ -31,7 +31,8 @@ public class ReceiveAllRequestsFromSomeoneController {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('User')")
     @Operation(summary = "Получение всех заявок пользователя",
-            description = "Позволяет пользователю получить список всех своих заявок с пагинацией и сортировкой")
+            description = "Позволяет пользователю получить список всех своих заявок с пагинацией и сортировкой. " +
+                    "Доступен только юзерам.")
     public String getRequests(Model model,
                               Authentication authentication,
                               @Parameter(description = "Номер страницы для пагинации, по умолчанию 0")

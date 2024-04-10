@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class LoginController {
 
     @GetMapping("/login")
-    @Operation(summary = "Страница входа", description = "Отображает страницу для входа в систему")
+    @Operation(summary = "Страница входа", description = "Отображает страницу для входа в систему. Доступен всем пользователям.")
     public String login() {
         return "login";
     }
 
     @GetMapping("/login-error")
-    @Operation(summary = "Ошибка входа", description = "Отображает страницу входа с сообщением об ошибке при неверных учетных данных")
+    @Operation(summary = "Ошибка входа",
+            description = "Отображает страницу входа с сообщением об ошибке при неверных учетных данных. Доступен всем пользователям.")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
         return "login";

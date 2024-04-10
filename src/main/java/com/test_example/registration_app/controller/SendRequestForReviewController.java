@@ -30,7 +30,8 @@ public class SendRequestForReviewController {
 
     @GetMapping("/review")
     @PreAuthorize("hasAnyAuthority('User')")
-    @Operation(summary = "Получение заявки по ID", description = "Получение заявки по ID для отправки на рассмотрение")
+    @Operation(summary = "Получение заявки по ID",
+            description = "Получение заявки по ID для отправки на рассмотрение. Доступен только юзерам.")
     public String getRequestById(@Parameter(description = "ID заявки для получения") @RequestParam Long idRequest,
                                  Model model,
                                  Authentication authentication) {
@@ -54,7 +55,8 @@ public class SendRequestForReviewController {
 
     @PostMapping("/review")
     @PreAuthorize("hasAnyAuthority('User')")
-    @Operation(summary = "Отправка заявки на рассмотрение", description = "Отправка заявки на рассмотрение по ее ID")
+    @Operation(summary = "Отправка заявки на рассмотрение",
+            description = "Отправка заявки на рассмотрение по ее ID. Доступен только юзерам.")
     public String sendRequestForReview(@Parameter(description = "ID заявки для отправки на рассмотрение")
                                        @RequestParam Long idRequest,
                                        Authentication authentication, Model model,

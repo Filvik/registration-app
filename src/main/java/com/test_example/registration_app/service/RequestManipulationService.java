@@ -76,4 +76,7 @@ public class RequestManipulationService {
         }
     }
 
+    public boolean checkNameOwner(String nameInBD, String nameOwnerRequest) {
+        return nameOwnerRequest.equals(nameInBD);
+    }
 }

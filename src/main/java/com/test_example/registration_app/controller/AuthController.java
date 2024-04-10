@@ -20,7 +20,7 @@ public class AuthController {
 
     @PostMapping("/auth")
     @Operation(summary = "Аутентификация пользователя",
-            description = "Генерирует JWT токен для аутентифицированных пользователей")
+            description = "Генерирует JWT токен для аутентифицированных пользователей. Доступен всем пользователям.")
     public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) {
         return authService.createAuthToken(authRequest);
     }
@@ -28,7 +28,7 @@ public class AuthController {
     @PostMapping("/registration")
     @PreAuthorize("hasAnyAuthority('Administrator')")
     @Operation(summary = "Регистрация нового пользователя",
-            description = "Создает новую учетную запись пользователя")
+            description = "Создает новую учетную запись пользователя. Доступен только администраторам.")
     public ResponseEntity<?> createNewUser(@RequestBody RegistrationUserDto registrationUserDto) {
         return authService.createNewUser(registrationUserDto);
     }

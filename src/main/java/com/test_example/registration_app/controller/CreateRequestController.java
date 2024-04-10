@@ -27,7 +27,8 @@ public class CreateRequestController {
 
     @GetMapping("/createRequestForm")
     @PreAuthorize("hasAnyAuthority('User')")
-    @Operation(summary = "Форма создания заявки", description = "Отображает форму для создания новой заявки пользователем")
+    @Operation(summary = "Форма создания заявки",
+            description = "Отображает форму для создания новой заявки пользователем. Доступен только юзерам.")
     public String showCreateRequestForm() {
         return "create_request_form";
     }
@@ -35,8 +36,10 @@ public class CreateRequestController {
     @PostMapping("/createRequest")
     @PreAuthorize("hasAnyAuthority('User')")
     @Operation(summary = "Создание заявки",
-            description = "Создает новую заявку на основе предоставленных данных")
-    public String createRequest(@Parameter(description = "DTO новой заявки") @ModelAttribute RequestDto requestDto,
+            description = "Создает новую заявку на основе предоставленных данных. Доступен только юзерам.")
+    public String createRequest(@Parameter(description = "DTO новой заявки")
+//                              @ModelAttribute RequestDto requestDto,   // для использование в браузуре
+                                @RequestBody RequestDto requestDto,   // для использование в swagger
                                 Model model,
                                 Authentication authentication) {
         if (authentication.getName().equals(requestDto.getUserName())) {
@@ -52,7 +55,7 @@ public class CreateRequestController {
             }
         } else {
             log.warn("Error user ");
-            model.addAttribute("errorMessage", "You aren't request owner");
+            model.addAttribute("errorMessage", "Имя в аутентификации не соответствует имени в заявки.");
             return "error";
         }
     }

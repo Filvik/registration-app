@@ -2,7 +2,7 @@ package com.test_example.registration_app.controller;
 
 import com.test_example.registration_app.dtos.RequestPageDTO;
 import com.test_example.registration_app.model.Request;
-import com.test_example.registration_app.service.CheckRoleFromAuthService;
+import com.test_example.registration_app.service.CheckFromAuthService;
 import com.test_example.registration_app.service.RequestManipulationService;
 import com.test_example.registration_app.service.RequestPagesConverterService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,11 +29,13 @@ public class OperatorOrAdministratorReviewAllRequestsController {
 
     private final RequestManipulationService requestManipulationService;
     private final RequestPagesConverterService requestPagesConverterService;
-    private final CheckRoleFromAuthService checkRoleFromAuthService;
+    private final CheckFromAuthService checkFromAuthService;
 
     @GetMapping("/requests")
     @PreAuthorize("hasAnyAuthority('Operator','Administrator')")
-    @Operation(summary = "Просмотр всех заявок", description = "Позволяет операторам и администраторам просматривать все заявки с возможностью сортировки и фильтрации")
+    @Operation(summary = "Просмотр всех заявок",
+            description = "Позволяет операторам и администраторам просматривать все заявки с возможностью сортировки и фильтрации." +
+                    "Доступен только операторам и администраторам.")
     public String getRequests(Model model, Authentication authentication,
                               @Parameter(description = "Номер страницы для пагинации, по умолчанию 0") @RequestParam(value = "page", defaultValue = "0") int defaultPage,
                               @Parameter(description = "Критерий сортировки по времени") @RequestParam(value = "sortTime", required = false) String sortTime,
@@ -41,7 +43,7 @@ public class OperatorOrAdministratorReviewAllRequestsController {
                               @Parameter(description = "Фильтрация по имени") @RequestParam(value = "filterName", required = false) String filterName) {
         try {
             Pageable pageable = requestManipulationService.getPageable(5, sortTime, sortName, defaultPage);
-            boolean isAdmin = checkRoleFromAuthService.checkRole(authentication, "Administrator");
+            boolean isAdmin = checkFromAuthService.checkRole(authentication, "Administrator");
             Page<Request> requestPage = requestManipulationService.findRequestsByFilter(filterName, pageable, isAdmin);
             RequestPageDTO requestPageDTO = requestPagesConverterService.toRequestPageDTO(requestPage);
             model.addAttribute("requests", requestPageDTO.getContent());

@@ -1,6 +1,7 @@
 package com.test_example.registration_app.service;
 
 import com.test_example.registration_app.dtos.RegistrationUserDto;
+import com.test_example.registration_app.dtos.RoleDto;
 import com.test_example.registration_app.exceptions.RegistrationUserDtoException;
 import com.test_example.registration_app.model.Role;
 import com.test_example.registration_app.model.User;
@@ -55,7 +56,7 @@ public class UserService implements UserDetailsService {
             user.setPhoneNumber(registrationUserDto.getPhoneNumber());
             user.setPasswordHash(passwordEncoder.encode(registrationUserDto.getPassword()));
             List<String> roleNames = registrationUserDto.getRoles().stream()
-                    .map(Role::getRoleName)
+                    .map(RoleDto::getRoleName)
                     .collect(Collectors.toList());
             Set<Role> userRoles = roleService.getUserRolesForAddInBD(roleNames);
             user.setRoles(userRoles);

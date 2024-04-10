@@ -27,7 +27,8 @@ public class UsersCollectionController {
 
     @GetMapping
     @PreAuthorize("hasAnyAuthority('Administrator')")
-    @Operation(summary = "Получить всех пользователей", description = "Возвращает список всех пользователей из базы данных")
+    @Operation(summary = "Получить всех пользователей",
+            description = "Возвращает список всех пользователей из базы данных. Доступен только администраторам.")
     public String getAllUsersFromBD(Model model) {
         try {
             List<UserDto> userDtos = usersConverterService.convertFromUserToUserDto(userManipulationService.getAllUsersFromDB());
