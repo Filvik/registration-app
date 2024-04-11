@@ -30,6 +30,7 @@ public class OperatorOrAdministratorReviewAllRequestsController {
     private final RequestManipulationService requestManipulationService;
     private final RequestPagesConverterService requestPagesConverterService;
     private final CheckFromAuthService checkFromAuthService;
+    private final int paginationSize = 5;
 
     @GetMapping("/requests")
     @PreAuthorize("hasAnyAuthority('Operator','Administrator')")
@@ -38,13 +39,17 @@ public class OperatorOrAdministratorReviewAllRequestsController {
                     "Доступен только операторам и администраторам.")
     public String getRequests(Model model, Authentication authentication,
                               @Parameter(description = "Номер страницы для пагинации, по умолчанию 0") @RequestParam(value = "page", defaultValue = "0") int defaultPage,
-                              @Parameter(description = "Критерий сортировки по времени") @RequestParam(value = "sortTime", required = false) String sortTime,
-                              @Parameter(description = "Критерий сортировки по имени") @RequestParam(value = "sortName", required = false) String sortName,
-                              @Parameter(description = "Фильтрация по имени") @RequestParam(value = "filterName", required = false) String filterName) {
+                              @Parameter(description = "Критерий сортировки по времени. {createdAt,asc или ,desc}") @RequestParam(value = "sortTime", required = false) String sortTime,
+                              @Parameter(description = "Критерий сортировки по имени. {user.fullName,asc или ,desc}") @RequestParam(value = "sortName", required = false) String sortName,
+                              @Parameter(description = "Фильтрация по имени. {Имя искомого пользователя}") @RequestParam(value = "filterName", required = false) String filterName) {
         try {
-            Pageable pageable = requestManipulationService.getPageable(5, sortTime, sortName, defaultPage);
+            Pageable pageable = requestManipulationService.getPageable(paginationSize, sortTime, sortName, defaultPage);
             boolean isAdmin = checkFromAuthService.checkRole(authentication, "Administrator");
             Page<Request> requestPage = requestManipulationService.findRequestsByFilter(filterName, pageable, isAdmin);
+            if (defaultPage >= requestPage.getTotalPages()) {
+                model.addAttribute("errorMessage", "На указанной странице заявок не найдено.");
+                return "error";
+            }
             RequestPageDTO requestPageDTO = requestPagesConverterService.toRequestPageDTO(requestPage);
             model.addAttribute("requests", requestPageDTO.getContent());
             model.addAttribute("currentPage", requestPageDTO.getCurrentPage());
