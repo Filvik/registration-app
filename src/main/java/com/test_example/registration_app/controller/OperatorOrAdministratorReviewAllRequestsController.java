@@ -30,7 +30,6 @@ public class OperatorOrAdministratorReviewAllRequestsController {
     private final RequestManipulationService requestManipulationService;
     private final RequestPagesConverterService requestPagesConverterService;
     private final CheckFromAuthService checkFromAuthService;
-    private final int paginationSize = 5;
 
     @GetMapping("/requests")
     @PreAuthorize("hasAnyAuthority('Operator','Administrator')")
@@ -38,7 +37,8 @@ public class OperatorOrAdministratorReviewAllRequestsController {
             description = "Позволяет операторам и администраторам просматривать все заявки с возможностью сортировки и фильтрации." +
                     "Доступен только операторам и администраторам.")
     public String getRequests(Model model, Authentication authentication,
-                              @Parameter(description = "Номер страницы для пагинации, по умолчанию 0") @RequestParam(value = "page", defaultValue = "0") int defaultPage,
+                              @Parameter(description = "Пагинация, {5,10,20}") @RequestParam(value = "paginationSize", defaultValue = "5") int paginationSize,
+                              @Parameter(description = "Номер страницы для пагинации, {0...n}") @RequestParam(value = "page", defaultValue = "0") int defaultPage,
                               @Parameter(description = "Критерий сортировки по времени. {createdAt,asc или ,desc}") @RequestParam(value = "sortTime", required = false) String sortTime,
                               @Parameter(description = "Критерий сортировки по имени. {user.fullName,asc или ,desc}") @RequestParam(value = "sortName", required = false) String sortName,
                               @Parameter(description = "Фильтрация по имени. {Имя искомого пользователя}") @RequestParam(value = "filterName", required = false) String filterName) {
