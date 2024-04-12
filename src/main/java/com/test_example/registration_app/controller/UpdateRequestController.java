@@ -48,7 +48,7 @@ public class UpdateRequestController {
                 model.addAttribute("idRequest", idRequest);
                 return "edit_request_by_id";
             } else {
-                model.addAttribute("errorMessage", "Пользователь не является владельцем этой заявки.");
+                model.addAttribute("errorMessage", "The user is not the owner of this application.");
                 return "error";
             }
         } catch (Exception e) {
@@ -73,14 +73,14 @@ public class UpdateRequestController {
                     requestManipulationService.checkNameOwner(requestDto.getUserName(), requestToUpdate.getUser().getFullName())) {
                 if (!UpdateRequestService.isUpdated(requestToUpdate, requestDto)) {
                     updateRequestService.updateRequestFromDto(requestToUpdate, requestDto);
-                    log.info("Запрос с идентификатором: {} обновлен.", idRequest);
+                    log.info("Request ID: {} has been updated.", idRequest);
                 } else {
-                    log.info("Для запроса с идентификатором: {} изменений не обнаружено. Пропуск обновления базы данных.", idRequest);
+                    log.info("No changes were detected for request with ID: {}. Skipping database update.", idRequest);
                 }
                 return "redirect:/api/createdRequest/" + requestToUpdate.getId();
             }
             else {
-                model.addAttribute("errorMessage", "Пользователь не является владельцем этой заявки.");
+                model.addAttribute("errorMessage", "The user is not the owner of this application.");
                 return "error";
             }
         } catch (Exception e) {

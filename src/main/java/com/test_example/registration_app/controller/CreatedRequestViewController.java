@@ -2,7 +2,9 @@ package com.test_example.registration_app.controller;
 
 import com.test_example.registration_app.dtos.RequestDto;
 import com.test_example.registration_app.model.Request;
+import com.test_example.registration_app.service.CheckFromAuthService;
 import com.test_example.registration_app.service.RequestConverterService;
+import com.test_example.registration_app.service.RequestManipulationService;
 import com.test_example.registration_app.service.UpdateRequestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,10 +29,12 @@ import static com.test_example.registration_app.enums.EnumStatus.DRAFT;
 public class CreatedRequestViewController {
 
     private final RequestConverterService requestConverterService;
+    private final RequestManipulationService requestManipulationService;
     private final UpdateRequestService updateRequestService;
+    private final CheckFromAuthService checkFromAuthService;
 
     @GetMapping("/createdRequest/{id}")
-    @PreAuthorize("hasAnyAuthority('Operator')")
+    @PreAuthorize("hasAnyAuthority('Operator','User')")
     @Operation(summary = "Получение заявки по ID",
             description = "Позволяет оператору получить детали заявки по её ID. Доступен только операторам.")
     public String getRequestById(@Parameter(description = "ID заявки") @PathVariable Long id,
@@ -38,13 +42,20 @@ public class CreatedRequestViewController {
                                  Authentication authentication) {
         try {
             Request requestFromDb = updateRequestService.getRequestById(id);
-            if (!requestFromDb.getStatus().equals(DRAFT)) {
-                RequestDto request = requestConverterService.fromRequestToRequestDto(requestFromDb);
-                model.addAttribute("request", request);
-                return "request_details";
+            if (checkFromAuthService.checkRole(authentication, "Operator")
+                    || (checkFromAuthService.checkRole(authentication, "User") &&
+                    requestManipulationService.checkNameOwner(requestFromDb.getUser().getFullName(), authentication.getName()))) {
+                if (!requestFromDb.getStatus().equals(DRAFT)) {
+                    RequestDto request = requestConverterService.fromRequestToRequestDto(requestFromDb);
+                    model.addAttribute("request", request);
+                    return "request_details";
+                } else {
+                    log.warn("Error status: " + requestFromDb.getStatus());
+                    model.addAttribute("errorMessage", "Error status: " + requestFromDb.getStatus());
+                    return "error";
+                }
             } else {
-                log.warn("Error status: " + requestFromDb.getStatus());
-                model.addAttribute("errorMessage", "Error status: " + requestFromDb.getStatus());
+                model.addAttribute("errorMessage", "Not available. You are not owner of request.");
                 return "error";
             }
         } catch (Exception e) {

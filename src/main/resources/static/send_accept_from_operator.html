@@ -21,7 +21,6 @@
         </div>
     </div>
     <form th:action="@{/sendAccept}" method="post" class="mt-3">
-        <input type="hidden" name="_method" value="put" />
         <input type="hidden" name="idRequest" th:value="${idRequest}" />
         <button type="submit" name="action" value="accept" class="btn btn-success">Принять</button>
         <button type="submit" name="action" value="reject" class="btn btn-danger">Отклонить</button>

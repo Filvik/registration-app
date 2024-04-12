@@ -24,7 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/review")
 @RequiredArgsConstructor
-@Tag(name = "OperatorOrAdministratorReviewAllRequestsController", description = "Контроллер для просмотра всех заявок оператором или администратором")
+@Tag(name = "OperatorOrAdministratorReviewAllRequestsController",
+        description = "Контроллер для просмотра всех заявок оператором или администратором")
 public class OperatorOrAdministratorReviewAllRequestsController {
 
     private final RequestManipulationService requestManipulationService;
@@ -47,7 +48,7 @@ public class OperatorOrAdministratorReviewAllRequestsController {
             boolean isAdmin = checkFromAuthService.checkRole(authentication, "Administrator");
             Page<Request> requestPage = requestManipulationService.findRequestsByFilter(filterName, pageable, isAdmin);
             if (defaultPage >= requestPage.getTotalPages()) {
-                model.addAttribute("errorMessage", "На указанной странице заявок не найдено.");
+                model.addAttribute("errorMessage", "No applications found on the specified page.");
                 return "error";
             }
             RequestPageDTO requestPageDTO = requestPagesConverterService.toRequestPageDTO(requestPage);

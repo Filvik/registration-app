@@ -50,7 +50,7 @@ public class AcceptRequestController {
         }
     }
 
-    @PutMapping
+    @PostMapping
     @PreAuthorize("hasAnyAuthority('Operator')")
     @Operation(summary = "Принять или отклонить заявку",
             description = "Позволяет оператору принять или отклонить заявку. Доступен только операторам.")

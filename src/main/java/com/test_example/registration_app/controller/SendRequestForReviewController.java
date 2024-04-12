@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @Controller
@@ -59,8 +58,7 @@ public class SendRequestForReviewController {
             description = "Отправка заявки на рассмотрение по ее ID. Доступен только юзерам.")
     public String sendRequestForReview(@Parameter(description = "ID заявки для отправки на рассмотрение")
                                        @RequestParam Long idRequest,
-                                       Authentication authentication, Model model,
-                                       RedirectAttributes redirectAttributes) {
+                                       Authentication authentication, Model model) {
         try {
             Request request = sendRequestForReviewService.sendForReview(idRequest, authentication.getName());
             return "redirect:/api/createdRequest/" + request.getId();

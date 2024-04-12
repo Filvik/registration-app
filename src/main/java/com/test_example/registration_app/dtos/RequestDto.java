@@ -1,6 +1,7 @@
 package com.test_example.registration_app.dtos;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class RequestDto {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private UUID uuid;

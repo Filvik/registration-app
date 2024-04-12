@@ -22,7 +22,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Controller
 @RequestMapping("/requests")
 @RequiredArgsConstructor
-@Tag(name = "ReceiveAllRequestsFromSomeoneController", description = "Контроллер для получения всех заявок от определенного пользователя")
+@Tag(name = "ReceiveAllRequestsFromSomeoneController",
+        description = "Контроллер для получения всех заявок от определенного пользователя")
 public class ReceiveAllRequestsFromSomeoneController {
 
     private final RequestManipulationService requestManipulationService;

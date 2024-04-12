@@ -32,7 +32,7 @@ public class AuthService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         } catch (BadCredentialsException e) {
-            return new ResponseEntity<>(new ApplicationErrorDto(HttpStatus.UNAUTHORIZED.value(), "Неправильный логин или пароль"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(new ApplicationErrorDto(HttpStatus.UNAUTHORIZED.value(), "Incorrect login or password."), HttpStatus.UNAUTHORIZED);
         }
         UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
         String token = jwtTokenUtils.generateToken(userDetails);
@@ -41,12 +41,12 @@ public class AuthService {
 
     public ResponseEntity<?> createNewUser(@RequestBody RegistrationUserDto registrationUserDto) {
         if (!registrationUserDto.getPassword().equals(registrationUserDto.getConfirmPassword())) {
-            return new ResponseEntity<>(new ApplicationErrorDto(HttpStatus.BAD_REQUEST.value(), "Пароли не совпадают"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApplicationErrorDto(HttpStatus.BAD_REQUEST.value(), "Password mismatch."), HttpStatus.BAD_REQUEST);
         }
         if (userRepository.findByFullName(registrationUserDto.getUsername()).isPresent()) {
-            return new ResponseEntity<>(new ApplicationErrorDto(HttpStatus.BAD_REQUEST.value(), "Пользователь с указанным именем уже существует"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApplicationErrorDto(HttpStatus.BAD_REQUEST.value(), "A user with the specified name already exists."), HttpStatus.BAD_REQUEST);
         }
         User user = userService.createNewUser(registrationUserDto);
-        return ResponseEntity.ok(new AddNewUserDto("Успешно добавлен новый пользователь", user.getFullName()));
+        return ResponseEntity.ok(new AddNewUserDto("New user added successfully.", user.getFullName()));
     }
 }
