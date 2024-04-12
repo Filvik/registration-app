@@ -28,6 +28,11 @@ public class JwtTokenUtils {
     @Value("${jwt.lifetime}")
     private Duration jwtLifetime;
 
+    /**
+     * Генерирует JWT для пользователя.
+     * @param userDetails данные пользователя.
+     * @return сгенерированный JWT.
+     */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         List<String> rolesList = userDetails.getAuthorities().stream()
@@ -49,14 +54,29 @@ public class JwtTokenUtils {
                 .compact();
     }
 
+    /**
+     * Извлекает имя пользователя из JWT.
+     * @param token JWT.
+     * @return имя пользователя.
+     */
     public String getUsername(String token) {
         return getAllClaimsFromToken(token).getSubject();
     }
 
+    /**
+     * Извлекает роли пользователя из JWT.
+     * @param token JWT.
+     * @return список ролей пользователя.
+     */
     public List<String> getRoles(String token) {
         return getAllClaimsFromToken(token).get("roles", List.class);
     }
 
+    /**
+     * Возвращает все утверждения (claims) из JWT.
+     * @param token JWT.
+     * @return утверждения.
+     */
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
@@ -64,6 +84,11 @@ public class JwtTokenUtils {
                 .getBody();
     }
 
+    /**
+     * Проверяет валидность JWT.
+     * @param token JWT.
+     * @return true, если токен действителен и не находится в черном списке.
+     */
     public boolean validateToken(String token) {
         try {
             final Claims claims = getAllClaimsFromToken(token);
@@ -78,5 +103,4 @@ public class JwtTokenUtils {
             return false;
         }
     }
-
 }

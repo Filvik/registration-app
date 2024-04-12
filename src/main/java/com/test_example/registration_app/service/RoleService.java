@@ -7,6 +7,7 @@ import com.test_example.registration_app.repository.UserRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -18,6 +19,7 @@ public class RoleService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public Set<Role> getUserRolesForAddInBD(List<String> roleNames) {
         Set<Role> roles = new HashSet<>();
         for (String roleName : roleNames) {
@@ -26,6 +28,7 @@ public class RoleService {
         return roles;
     }
 
+    @Transactional(readOnly = true)
     public Set<Role> getUserRolesFromBD(Long id){
         Optional<User> user = userRepository.findById(id);
         return user.map(User::getRoles).orElse(Collections.emptySet());

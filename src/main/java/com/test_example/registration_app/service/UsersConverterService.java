@@ -5,7 +5,6 @@ import com.test_example.registration_app.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,14 +16,26 @@ public class UsersConverterService {
 
     private final RoleConverterService roleConverterService;
 
-    @Transactional(readOnly = true)
+    /**
+     * Конвертирует список пользователей в список DTO.
+     * Использует метод convertFromUserToUserDto для конвертации каждого пользователя.
+     *
+     * @param users Список пользователей для конвертации.
+     * @return Список DTO пользователей.
+     */
     public List<UserDto> convertFromUserToUserDto(List<User> users) {
         return users.stream()
                 .map(this::convertFromUserToUserDto)
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    /**
+     * Конвертирует одного пользователя в DTO.
+     * Данные о ролях пользователя также конвертируются с помощью RoleConverterService.
+     *
+     * @param user Пользователь, который должен быть конвертирован.
+     * @return DTO пользователя.
+     */
     public UserDto convertFromUserToUserDto(User user) {
         return new UserDto(
                 user.getFullName(),

@@ -34,11 +34,17 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Загружает детали пользователя по его имени пользователя для аутентификации.
+     * @param username имя пользователя, по которому осуществляется поиск в базе данных.
+     * @return UserDetails содержащий информацию о пользователе, включая имя, пароль и роли.
+     * @throws UsernameNotFoundException если пользователь не найден в базе данных.
+     */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByFullName(username).orElseThrow(() -> new UsernameNotFoundException(
-                String.format("Пользователь '%s' не найден", username)));
+                String.format("User '%s' not found", username)));
         user.setRoles(roleService.getUserRolesFromBD(user.getId()));
         return new org.springframework.security.core.userdetails.User(
                 user.getFullName(),
@@ -47,6 +53,12 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    /**
+     * Создает нового пользователя на основе предоставленного DTO.
+     * @param registrationUserDto DTO содержащее данные для регистрации пользователя, включая имя, пароль, email и роли.
+     * @return User сохраненный и обновленный пользователь.
+     * @throws RegistrationUserDtoException если данные DTO не проходят валидацию.
+     */
     @Transactional
     public User createNewUser(RegistrationUserDto registrationUserDto) {
         if (validateRegistrationUserDto(registrationUserDto)){
@@ -68,6 +80,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    /**
+     * Валидирует данные регистрации пользователя.
+     * @param registrationUserDto DTO для регистрации пользователя.
+     * @return boolean true, если данные корректны.
+     */
     public boolean validateRegistrationUserDto(RegistrationUserDto registrationUserDto) {
         if (registrationUserDto == null) {
             log.error("RegistrationUserDto is null");

@@ -17,6 +17,14 @@ public class RequestConverterService {
 
     private final UserRepository userRepository;
 
+    /**
+     * Конвертирует объект DTO в объект запроса (Request).
+     * Проверяет валидность DTO, извлекает пользователя по имени и создаёт новый объект запроса.
+     *
+     * @param dto объект DTO, содержащий данные для создания запроса.
+     * @return объект запроса (Request).
+     * @throws IllegalArgumentException если пользователь не найден или данные DTO невалидны.
+     */
     public Request fromRequestDtoToRequest(RequestDto dto) {
         validateRequestDto(dto);
 
@@ -38,6 +46,14 @@ public class RequestConverterService {
         return request;
     }
 
+    /**
+     * Конвертирует объект запроса в объект DTO.
+     * Проверяет валидность объекта запроса и создаёт DTO с соответствующими данными.
+     *
+     * @param request объект запроса для конвертации в DTO.
+     * @return объект DTO (RequestDto).
+     * @throws IllegalArgumentException если объект запроса невалиден.
+     */
     public RequestDto fromRequestToRequestDto(Request request) {
         validateRequest(request);
 
@@ -54,6 +70,12 @@ public class RequestConverterService {
         return dto;
     }
 
+    /**
+     * Валидирует DTO запроса.
+     *
+     * @param dto DTO запроса для валидации.
+     * @throws IllegalArgumentException если DTO содержит невалидные или неполные данные.
+     */
     protected static void validateRequestDto(RequestDto dto) {
         if (dto == null || !StringUtils.hasText(dto.getUserName()) || !StringUtils.hasText(dto.getStatus()) ||
                 !StringUtils.hasText(dto.getText())) {
@@ -62,6 +84,12 @@ public class RequestConverterService {
         }
     }
 
+    /**
+     * Валидирует объект запроса.
+     *
+     * @param request объект запроса для валидации.
+     * @throws IllegalArgumentException если объект запроса содержит невалидные или неполные данные.
+     */
     protected static void validateRequest(Request request) {
         if (request == null || request.getUser() == null || request.getStatus() == null ||
                 !StringUtils.hasText(request.getText())) {

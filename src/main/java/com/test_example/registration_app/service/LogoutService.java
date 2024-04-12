@@ -18,6 +18,13 @@ public class LogoutService {
     private String secretKey;
     private RedisTemplate<String, Object> redisTemplate;
 
+    /**
+     * Извлекает JTI (JWT ID) из токена.
+     *
+     * @param token JWT токен в формате строки.
+     * @return JTI из токена.
+     * @throws ResponseStatusException с соответствующим HTTP статусом, если токен истек, некорректен или при обработке возникла ошибка.
+     */
     public String extractJti(String token) {
         try {
             token = token.replace("Bearer ", "");
@@ -35,6 +42,13 @@ public class LogoutService {
         }
     }
 
+    /**
+     * Извлекает время истечения токена.
+     *
+     * @param token JWT токен в формате строки.
+     * @return время истечения токена в миллисекундах.
+     * @throws ResponseStatusException с соответствующим HTTP статусом, если токен истек, некорректен или при обработке возникла ошибка.
+     */
     public Long extractExpirationTime(String token) {
         try {
             token = token.replace("Bearer ", "");
@@ -52,6 +66,12 @@ public class LogoutService {
         }
     }
 
+    /**
+     * Возвращает оставшееся время жизни ключа в Redis.
+     *
+     * @param key ключ в Redis.
+     * @return время в секундах до истечения срока действия ключа.
+     */
     public Long getKeyExpiration(String key) {
         return redisTemplate.getExpire(key, TimeUnit.SECONDS);
     }

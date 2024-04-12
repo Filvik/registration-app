@@ -21,6 +21,14 @@ public class CreateRequestService {
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
 
+    /**
+     * Создает новый запрос на основе данных DTO.
+     * Метод проверяет статус запроса и существование пользователя в системе перед сохранением запроса.
+     *
+     * @param requestDto объект DTO, содержащий данные запроса.
+     * @return сохраненный объект запроса.
+     * @throws IllegalArgumentException если пользователь не найден или статус запроса не позволяет его создать.
+     */
     @Transactional
     public Request createRequest(RequestDto requestDto) {
         if (requestDto.getStatus().equals("DRAFT") ||

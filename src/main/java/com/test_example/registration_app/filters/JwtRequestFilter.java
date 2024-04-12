@@ -22,8 +22,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
+
     private final JwtTokenUtils jwtTokenUtils;
 
+    /**
+     * Фильтрует входящие HTTP-запросы, проверяя наличие JWT в заголовке Authorization.
+     * Если токен присутствует и валиден, извлекает имя пользователя и роли,
+     * затем создает объект аутентификации и устанавливает его в контексте Spring Security.
+     *
+     * @param request HTTP запрос
+     * @param response HTTP ответ
+     * @param filterChain цепочка фильтров
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

@@ -22,6 +22,13 @@ public class RequestManipulationService {
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
 
+    /**
+     * Находит страницу с запросами по имени пользователя.
+     *
+     * @param name Имя пользователя для поиска.
+     * @param pageable Объект Pageable, определяющий параметры пагинации и сортировки.
+     * @return Страница с запросами.
+     */
     @Transactional(readOnly = true)
     public Page<Request> findRequestsByUserName(String name, Pageable pageable) {
         return userRepository.findByFullName(name)
@@ -29,6 +36,15 @@ public class RequestManipulationService {
                 .orElse(Page.empty());
     }
 
+    /**
+     * Создает объект Pageable с параметрами сортировки.
+     *
+     * @param defaultSize Размер страницы.
+     * @param sortDirection Направление сортировки.
+     * @param sortTime Параметр сортировки по времени.
+     * @param defaultPage Номер страницы.
+     * @return Объект Pageable.
+     */
     public Pageable getPageable(int defaultSize, Sort.Direction sortDirection, String sortTime, int defaultPage) {
         String[] sortParams = sortTime.split(",");
         if (sortParams.length > 1 && "desc".equalsIgnoreCase(sortParams[1])) {
@@ -37,6 +53,15 @@ public class RequestManipulationService {
         return PageRequest.of(defaultPage, defaultSize, Sort.by(sortDirection, sortParams[0]));
     }
 
+    /**
+     * Создает объект Pageable с множественными параметрами сортировки.
+     *
+     * @param defaultSize Размер страницы.
+     * @param sortTime Параметр сортировки по времени.
+     * @param sortName Параметр сортировки по имени.
+     * @param defaultPage Номер страницы.
+     * @return Объект Pageable.
+     */
     public Pageable getPageable(int defaultSize, String sortTime, String sortName, int defaultPage) {
         List<Sort.Order> orders = new ArrayList<>();
         if (sortTime != null && !sortTime.isEmpty()) {
@@ -59,6 +84,14 @@ public class RequestManipulationService {
         return pageable;
     }
 
+    /**
+     * Находит страницу с запросами по фильтру с учетом статуса администратора.
+     *
+     * @param filterName Фильтр по имени пользователя.
+     * @param pageable Объект Pageable.
+     * @param isAdmin Является ли пользователь администратором.
+     * @return Страница с запросами.
+     */
     @Transactional(readOnly = true)
     public Page<Request> findRequestsByFilter(String filterName, Pageable pageable, boolean isAdmin) {
         if (isAdmin) {
@@ -76,6 +109,13 @@ public class RequestManipulationService {
         }
     }
 
+    /**
+     * Проверяет соответствие имени в базе данных с именем в запросе.
+     *
+     * @param nameInBD Имя пользователя в базе данных.
+     * @param nameOwnerRequest Имя пользователя в запросе.
+     * @return true, если имена совпадают, иначе false.
+     */
     public boolean checkNameOwner(String nameInBD, String nameOwnerRequest) {
         return nameOwnerRequest.equals(nameInBD);
     }

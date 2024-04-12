@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,14 +22,37 @@ public class UserManipulationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
+    /**
+     * Возвращает список всех пользователей из базы данных.
+     *
+     * @return Список пользователей.
+     */
     public List<User> getAllUsersFromDB() {
         return userRepository.findAll();
     }
 
+    /**
+     * Получает пользователя по его идентификатору.
+     * Если пользователь не найден, выбрасывается исключение UsernameNotFoundException.
+     *
+     * @param id Идентификатор пользователя.
+     * @return Пользователь.
+     * @throws UsernameNotFoundException если пользователь с указанным ID не найден.
+     */
     public User getUserFromDB(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("This user doesn't exist"));
     }
 
+    /**
+     * Добавляет новую роль пользователю.
+     * Если роль уже присвоена пользователю или такой роли нет в базе данных, выбрасывается исключение.
+     *
+     * @param id Идентификатор пользователя.
+     * @param newRole Название роли, которая будет добавлена пользователю.
+     * @return Обновлённый пользователь.
+     * @throws IllegalArgumentException если роль уже присвоена пользователю или роль не существует.
+     */
+    @Transactional
     public User addRoleForUser(Long id, String newRole) {
         Optional<Role> checkRole = roleRepository.findByRoleName(newRole);
         if (checkRole.isPresent()) {

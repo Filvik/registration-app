@@ -27,7 +27,13 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
 
-
+    /**
+     * Аутентификация пользователя и генерация JWT.
+     *
+     * @param authRequest объект, содержащий имя пользователя и пароль.
+     * @return ResponseEntity с JWT в случае успеха или с ошибкой, если аутентификация не удалась.
+     * @throws BadCredentialsException если имя пользователя или пароль неверны.
+     */
     public ResponseEntity<?> createAuthToken(@RequestBody JwtRequest authRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
@@ -39,6 +45,12 @@ public class AuthService {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
+    /**
+     * Регистрация нового пользователя в системе.
+     *
+     * @param registrationUserDto объект, содержащий информацию о новом пользователе, включая имя и пароль.
+     * @return ResponseEntity с информацией о созданном пользователе или с ошибкой, если регистрация не удалась.
+     */
     public ResponseEntity<?> createNewUser(@RequestBody RegistrationUserDto registrationUserDto) {
         if (!registrationUserDto.getPassword().equals(registrationUserDto.getConfirmPassword())) {
             return new ResponseEntity<>(new ApplicationErrorDto(HttpStatus.BAD_REQUEST.value(), "Password mismatch."), HttpStatus.BAD_REQUEST);
