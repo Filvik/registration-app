@@ -80,7 +80,8 @@ public class UpdateRequestController {
                 return "redirect:/api/createdRequest/" + requestToUpdate.getId();
             }
             else {
-                model.addAttribute("errorMessage", "The user is not the owner of this application.");
+                model.addAttribute("errorMessage",
+                        "The user is not the owner of that request or haven't rights for that manipulation");
                 return "error";
             }
         } catch (Exception e) {
