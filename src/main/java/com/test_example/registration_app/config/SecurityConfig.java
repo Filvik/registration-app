@@ -43,7 +43,14 @@ public class SecurityConfig {
             "/auth"
     };
 
-
+    /**
+     * Настраивает цепочку фильтров безопасности для HTTP-запросов.
+     * Определяет правила доступа к различным URL, настройки формы входа, выхода из системы и обработку исключений.
+     *
+     * @param http объект HttpSecurity для настройки параметров безопасности.
+     * @return сконфигурированный объект SecurityFilterChain.
+     * @throws Exception если произошла ошибка при конфигурации.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -77,6 +84,11 @@ public class SecurityConfig {
 //        return http.build();
 //    }
 
+    /**
+     * Создает провайдер аутентификации для интеграции с пользовательским сервисом и шифрованием паролей.
+     *
+     * @return объект DaoAuthenticationProvider для аутентификации.
+     */
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
@@ -85,21 +97,43 @@ public class SecurityConfig {
         return daoAuthenticationProvider;
     }
 
+    /**
+     * Создает и возвращает кодировщик паролей.
+     *
+     * @return объект BCryptPasswordEncoder для шифрования паролей.
+     */
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Создает и возвращает менеджер аутентификации.
+     *
+     * @param authenticationConfiguration конфигурация аутентификации.
+     * @return объект AuthenticationManager для управления аутентификацией.
+     * @throws Exception если произошла ошибка при создании менеджера.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /**
+     * Создает и возвращает обработчик отказа в доступе.
+     *
+     * @return объект AccessDeniedHandler для обработки событий доступа.
+     */
     @Bean
     public AccessDeniedHandler accessDeniedHandler() {
         return new CustomAccessDeniedHandler();
     }
 
+    /**
+     * Создает и возвращает точку входа для аутентификации.
+     *
+     * @return объект AuthenticationEntryPoint для обработки ошибок аутентификации.
+     */
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return new CustomAuthenticationEntryPoint();
